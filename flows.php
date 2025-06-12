@@ -3,11 +3,11 @@ require_once 'wa/app/includes/config.php';
 require_once 'wa/app/includes/functions.php';
 
 // Check if user is logged in
-session_start();
-if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
-    exit;
-}
+// session_start();
+// if (!isset($_SESSION['user_id'])) {
+//     header('Location: login.php');
+//     exit;
+// }
 ?>
 <!DOCTYPE html>
 <html lang="en">
