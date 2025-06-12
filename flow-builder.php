@@ -1,3 +1,21 @@
+<?php
+require_once 'wa/app/includes/config.php';
+require_once 'wa/app/includes/functions.php';
+redirectIfNotLoggedIn();
+
+$csrfToken = generateCsrfToken();
+
+// Get user's bots
+try {
+    $stmt = $pdo->prepare("SELECT * FROM bots WHERE user_id = ?");
+    $stmt->execute([$_SESSION['user_id']]);
+    $bots = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch(PDOException $e) {
+    $bots = [];
+    setFlash('error', 'Failed to load BOTs: ' . $e->getMessage());
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -161,6 +179,26 @@
     <div class="flex h-screen">
         <!-- Sidebar -->
         <div class="sidebar w-1/4">
+            <!-- Flow Details Section -->
+            <div class="mb-6">
+                <h2 class="section-title">Flow Details</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Flow Name</label>
+                        <input type="text" id="flowName" class="w-full p-2 border rounded" placeholder="Enter flow name">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Select Bot</label>
+                        <select class="w-full p-2 border rounded" id="flowBotSelect">
+                            <option value="">All Bots</option>
+                            <?php foreach ($bots as $bot): ?>
+                            <option value="<?= $bot['id'] ?>"><?= htmlspecialchars($bot['business_name']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
             <h2 class="section-title">Messages</h2>
             <div class="space-y-2">
                 <div class="node-item" draggable="true" data-type="text">
@@ -233,6 +271,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             const canvas = document.getElementById('canvas');
             const debug = document.getElementById('debug');
+            const flowNameInput = document.getElementById('flowName');
+            const botSelect = document.getElementById('flowBotSelect');
             let nodes = [];
             let connections = [];
             let draggedNode = null;
@@ -240,6 +280,172 @@
             let endNode = null;
             let isConnecting = false;
             let tempConnection = null;
+            let currentFlowId = null;
+
+            // Function to get node content
+            function getNodeContent(node) {
+                const nodeElement = document.getElementById(node.id);
+                if (!nodeElement) return null;
+
+                const type = node.type;
+                const content = {};
+
+                switch(type) {
+                    case 'text':
+                        content.text = nodeElement.querySelector('textarea').value;
+                        break;
+                    case 'media':
+                        content.file = nodeElement.querySelector('input[type="file"]').value;
+                        break;
+                    case 'buttons':
+                        const inputs = nodeElement.querySelectorAll('input[type="text"]');
+                        content.button1 = inputs[0].value;
+                        content.button2 = inputs[1].value;
+                        content.button3 = inputs[2].value;
+                        break;
+                    case 'delay':
+                        content.delay = nodeElement.querySelector('input[type="number"]').value;
+                        break;
+                    case 'http':
+                        content.url = nodeElement.querySelector('input[type="text"]').value;
+                        content.method = nodeElement.querySelector('select').value;
+                        break;
+                }
+
+                return content;
+            }
+
+            // Modify save function to include flow name and bot ID
+            function saveFlow() {
+                const flowName = flowNameInput.value.trim();
+                const botId = botSelect.value;
+
+                if (!flowName) {
+                    Swal.fire('Error', 'Please enter a flow name', 'error');
+                    return;
+                }
+
+                if (!botId) {
+                    Swal.fire('Error', 'Please select a bot', 'error');
+                    return;
+                }
+
+                // Collect node data with content
+                const nodeData = nodes.map(node => {
+                    const content = getNodeContent(node);
+                    return {
+                        id: node.id,
+                        type: node.type,
+                        x: parseInt(node.element.style.left),
+                        y: parseInt(node.element.style.top),
+                        content: content
+                    };
+                });
+
+                const flowData = {
+                    id: currentFlowId,
+                    name: flowName,
+                    bot_id: botId,
+                    nodes: nodeData,
+                    connections: connections.map(conn => ({
+                        from: conn.from,
+                        to: conn.to
+                    }))
+                };
+
+                console.log('Saving flow data:', flowData); // Debug log
+
+                fetch('save_flow.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(flowData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire('Success', 'Flow saved successfully', 'success');
+                        if (!currentFlowId) {
+                            currentFlowId = data.flow_id;
+                            // Update URL with the new flow ID
+                            window.history.replaceState({}, '', `flow-builder.php?id=${data.flow_id}`);
+                        }
+                    } else {
+                        throw new Error(data.error || 'Failed to save flow');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire('Error', error.message, 'error');
+                });
+            }
+
+            // Add save button to the UI
+            const saveButton = document.createElement('button');
+            saveButton.className = 'fixed top-4 right-4 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors';
+            saveButton.textContent = 'Save Flow';
+            saveButton.addEventListener('click', saveFlow);
+            document.body.appendChild(saveButton);
+
+            // Load bots for selection
+            function loadBots() {
+                fetch('get_bots.php')
+                    .then(response => response.json())
+                    .then(data => {
+                        botSelect.innerHTML = '<option value="">Select a bot</option>';
+                        data.forEach(bot => {
+                            const option = document.createElement('option');
+                            option.value = bot.id;
+                            option.textContent = bot.name;
+                            botSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error loading bots:', error);
+                        Swal.fire('Error', 'Failed to load bots', 'error');
+                    });
+            }
+
+            // Load bots on page load
+            loadBots();
+
+            // Check if we're editing an existing flow
+            const urlParams = new URLSearchParams(window.location.search);
+            const flowId = urlParams.get('id');
+            
+            if (flowId) {
+                loadExistingFlow(flowId);
+            }
+
+            // Function to load existing flow
+            function loadExistingFlow(id) {
+                fetch(`get_flow.php?id=${id}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            throw new Error(data.error);
+                        }
+                        
+                        currentFlowId = id;
+                        flowNameInput.value = data.name || '';
+                        botSelect.value = data.bot_id || '';
+                        
+                        // Load nodes
+                        data.nodes.forEach(node => {
+                            createNode(node.type, node.x, node.y, node.content, node.id);
+                        });
+                        
+                        // Load connections
+                        data.connections.forEach(conn => {
+                            createConnection(conn.from, conn.to);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error loading flow:', error);
+                        Swal.fire('Error', 'Failed to load flow', 'error');
+                    });
+            }
 
             // Debug function
             function log(message) {
@@ -278,33 +484,32 @@
             });
 
             // Create a new node
-            function createNode(type, x, y) {
+            function createNode(type, x, y, content, id) {
                 const node = document.createElement('div');
                 node.className = 'node';
                 node.style.left = x + 'px';
                 node.style.top = y + 'px';
                 
-                const nodeId = 'node-' + Date.now();
-                node.id = nodeId;
+                node.id = id || 'node-' + Date.now();
                 
-                let content = '';
+                let nodeContent = '';
                 switch(type) {
                     case 'text':
-                        content = `
+                        nodeContent = `
                             <div class="node-header">
                                 <span class="font-medium">Text Message</span>
-                                <button class="delete-btn" onclick="deleteNode('${nodeId}')">Delete</button>
+                                <button class="delete-btn" onclick="deleteNode('${node.id}')">Delete</button>
                             </div>
                             <div class="node-content">
-                                <textarea class="w-full p-2 border rounded" placeholder="Enter your message"></textarea>
+                                <textarea class="w-full p-2 border rounded" placeholder="Enter your message">${content}</textarea>
                             </div>
                         `;
                         break;
                     case 'media':
-                        content = `
+                        nodeContent = `
                             <div class="node-header">
                                 <span class="font-medium">Media Message</span>
-                                <button class="delete-btn" onclick="deleteNode('${nodeId}')">Delete</button>
+                                <button class="delete-btn" onclick="deleteNode('${node.id}')">Delete</button>
                             </div>
                             <div class="node-content">
                                 <input type="file" class="w-full p-2 border rounded">
@@ -312,51 +517,51 @@
                         `;
                         break;
                     case 'buttons':
-                        content = `
+                        nodeContent = `
                             <div class="node-header">
                                 <span class="font-medium">Interactive Buttons</span>
-                                <button class="delete-btn" onclick="deleteNode('${nodeId}')">Delete</button>
+                                <button class="delete-btn" onclick="deleteNode('${node.id}')">Delete</button>
                             </div>
                             <div class="node-content">
                                 <div class="space-y-2">
-                                    <input type="text" class="w-full p-2 border rounded" placeholder="Button 1">
-                                    <input type="text" class="w-full p-2 border rounded" placeholder="Button 2">
-                                    <input type="text" class="w-full p-2 border rounded" placeholder="Button 3">
+                                    <input type="text" class="w-full p-2 border rounded" placeholder="Button 1" value="${content.button1}">
+                                    <input type="text" class="w-full p-2 border rounded" placeholder="Button 2" value="${content.button2}">
+                                    <input type="text" class="w-full p-2 border rounded" placeholder="Button 3" value="${content.button3}">
                                 </div>
                             </div>
                         `;
                         break;
                     case 'delay':
-                        content = `
+                        nodeContent = `
                             <div class="node-header">
                                 <span class="font-medium">Time Delay</span>
-                                <button class="delete-btn" onclick="deleteNode('${nodeId}')">Delete</button>
+                                <button class="delete-btn" onclick="deleteNode('${node.id}')">Delete</button>
                             </div>
                             <div class="node-content">
-                                <input type="number" class="w-full p-2 border rounded" placeholder="Delay in seconds">
+                                <input type="number" class="w-full p-2 border rounded" placeholder="Delay in seconds" value="${content.delay}">
                             </div>
                         `;
                         break;
                     case 'http':
-                        content = `
+                        nodeContent = `
                             <div class="node-header">
                                 <span class="font-medium">HTTP Request</span>
-                                <button class="delete-btn" onclick="deleteNode('${nodeId}')">Delete</button>
+                                <button class="delete-btn" onclick="deleteNode('${node.id}')">Delete</button>
                             </div>
                             <div class="node-content">
-                                <input type="text" class="w-full p-2 border rounded mb-2" placeholder="URL">
+                                <input type="text" class="w-full p-2 border rounded mb-2" placeholder="URL" value="${content.url}">
                                 <select class="w-full p-2 border rounded">
-                                    <option>GET</option>
-                                    <option>POST</option>
-                                    <option>PUT</option>
-                                    <option>DELETE</option>
+                                    <option value="GET" ${content.method === 'GET' ? 'selected' : ''}>GET</option>
+                                    <option value="POST" ${content.method === 'POST' ? 'selected' : ''}>POST</option>
+                                    <option value="PUT" ${content.method === 'PUT' ? 'selected' : ''}>PUT</option>
+                                    <option value="DELETE" ${content.method === 'DELETE' ? 'selected' : ''}>DELETE</option>
                                 </select>
                             </div>
                         `;
                         break;
                 }
                 
-                node.innerHTML = content;
+                node.innerHTML = nodeContent;
                 
                 // Add source handle
                 const sourceHandle = document.createElement('div');
@@ -374,8 +579,8 @@
                 node.addEventListener('mousedown', startDragging);
                 
                 canvas.appendChild(node);
-                nodes.push({id: nodeId, element: node});
-                log(`Node created: ${nodeId}`);
+                nodes.push({id: node.id, element: node, type, x, y, content});
+                log(`Node created: ${node.id}`);
 
                 // Disable delete button for first node
                 if (nodes.length === 1) {
@@ -543,48 +748,6 @@
                 });
             }
 
-            // Save flow
-            function saveFlow() {
-                const flowData = {
-                    nodes: nodes.map(node => ({
-                        id: node.id,
-                        type: node.element.querySelector('.node-header span').textContent,
-                        x: parseInt(node.element.style.left),
-                        y: parseInt(node.element.style.top),
-                        content: node.element.querySelector('.node-content').innerHTML
-                    })),
-                    connections: connections.map(conn => ({
-                        from: conn.start.id,
-                        to: conn.end.id
-                    }))
-                };
-                
-                log('Saving flow...');
-                
-                // Send to server
-                fetch('save_flow.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(flowData)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    log(`Flow saved successfully: ${JSON.stringify(data)}`);
-                })
-                .catch(error => {
-                    log(`Error saving flow: ${error.message}`);
-                });
-            }
-
-            // Add save button
-            const saveButton = document.createElement('button');
-            saveButton.className = 'fixed bottom-4 left-4 bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600';
-            saveButton.textContent = 'Save Flow';
-            saveButton.onclick = saveFlow;
-            document.body.appendChild(saveButton);
-
             // Add delete node function
             function deleteNode(nodeId) {
                 // Don't allow deleting the first node
@@ -610,6 +773,164 @@
                     log(`Node deleted: ${nodeId}`);
                 }
             }
+
+            // Add node to canvas
+            function addNode(type) {
+                const node = document.createElement('div');
+                node.className = 'node absolute bg-white rounded-lg shadow-md p-4 cursor-move';
+                node.style.left = '50px';
+                node.style.top = '50px';
+                node.id = `node-${Date.now()}`;
+                node.dataset.type = type;
+
+                let content = '';
+                switch(type) {
+                    case 'text':
+                        content = `
+                            <div class="mb-2">
+                                <label class="block text-sm font-medium text-gray-700">Message</label>
+                                <textarea class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" rows="3"></textarea>
+                            </div>
+                        `;
+                        break;
+                    case 'media':
+                        content = `
+                            <div class="mb-2">
+                                <label class="block text-sm font-medium text-gray-700">Media File</label>
+                                <input type="file" class="mt-1 block w-full">
+                            </div>
+                        `;
+                        break;
+                    case 'buttons':
+                        content = `
+                            <div class="space-y-2">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Button 1</label>
+                                    <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Button 2</label>
+                                    <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Button 3</label>
+                                    <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'delay':
+                        content = `
+                            <div class="mb-2">
+                                <label class="block text-sm font-medium text-gray-700">Delay (seconds)</label>
+                                <input type="number" min="1" value="1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            </div>
+                        `;
+                        break;
+                    case 'http':
+                        content = `
+                            <div class="space-y-2">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">URL</label>
+                                    <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Method</label>
+                                    <select class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                        <option value="GET">GET</option>
+                                        <option value="POST">POST</option>
+                                    </select>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                }
+
+                node.innerHTML = `
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm font-medium text-gray-700">${type.charAt(0).toUpperCase() + type.slice(1)}</span>
+                        <button onclick="removeNode('${node.id}')" class="text-red-500 hover:text-red-700">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    ${content}
+                    <div class="connection-points flex justify-between mt-2">
+                        <div class="connection-point" data-point="start"></div>
+                        <div class="connection-point" data-point="end"></div>
+                    </div>
+                `;
+
+                canvas.appendChild(node);
+                nodes.push({
+                    id: node.id,
+                    type: type,
+                    element: node
+                });
+
+                // Make the node draggable
+                makeNodeDraggable(node);
+            }
+
+            // Make node draggable
+            function makeNodeDraggable(node) {
+                let isDragging = false;
+                let currentX;
+                let currentY;
+                let initialX;
+                let initialY;
+                let xOffset = 0;
+                let yOffset = 0;
+
+                node.addEventListener('mousedown', dragStart);
+                document.addEventListener('mousemove', drag);
+                document.addEventListener('mouseup', dragEnd);
+
+                function dragStart(e) {
+                    // Only start drag if clicking on the node header or empty space
+                    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
+                        return;
+                    }
+
+                    initialX = e.clientX - xOffset;
+                    initialY = e.clientY - yOffset;
+
+                    if (e.target === node || node.contains(e.target)) {
+                        isDragging = true;
+                    }
+                }
+
+                function drag(e) {
+                    if (isDragging) {
+                        e.preventDefault();
+                        currentX = e.clientX - initialX;
+                        currentY = e.clientY - initialY;
+
+                        xOffset = currentX;
+                        yOffset = currentY;
+
+                        setTranslate(currentX, currentY, node);
+                    }
+                }
+
+                function dragEnd(e) {
+                    initialX = currentX;
+                    initialY = currentY;
+                    isDragging = false;
+                }
+
+                function setTranslate(xPos, yPos, el) {
+                    el.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
+                }
+            }
+
+            // Add a button to go to flows list
+            const flowsListButton = document.createElement('a');
+            flowsListButton.href = 'flows.php';
+            flowsListButton.className = 'fixed top-4 right-32 bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors';
+            flowsListButton.textContent = 'Back to Flows List';
+            document.body.appendChild(flowsListButton);
 
             log('Flow builder initialized');
         });
