@@ -8,55 +8,61 @@ redirectIfNotLoggedIn();
 header('Content-Type: application/json');
 
 try {
+    // Get POST data
     $data = json_decode(file_get_contents('php://input'), true);
-    $userId = $_SESSION['user_id'];
-
-    // Validate input
-    $required = ['bot_id', 'flow_name', 'flow_json'];
-    foreach ($required as $field) {
-        if (empty($data[$field])) {
-            throw new Exception("Missing required field: $field");
-        }
+    
+    if (!$data) {
+        throw new Exception('Invalid data received');
     }
 
-    // Validate JSON
-    json_decode($data['flow_json']);
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        throw new Exception('Invalid JSON format');
+    // Validate required fields
+    if (empty($data['name']) || empty($data['bot_id'])) {
+        throw new Exception('Name and bot are required');
     }
 
-    // Check bot ownership
-    $stmt = $pdo->prepare("SELECT id FROM bots WHERE id = ? AND user_id = ?");
-    $stmt->execute([$data['bot_id'], $userId]);
-    if (!$stmt->fetch()) {
-        throw new Exception('Invalid bot selection');
-    }
-
-    // Prepare data
-    $flowData = [
-        'bot_id' => $data['bot_id'],
-        'flow_name' => $data['flow_name'],
-        'flow_json' => $data['flow_json'],
-        'updated_at' => date('Y-m-d H:i:s')
-    ];
-
-    if (empty($data['id'])) {
-        // Create new
-        $stmt = $pdo->prepare("INSERT INTO bot_flows SET " . 
-            implode('=?, ', array_keys($flowData)) . "=?");
-        $stmt->execute(array_values($flowData));
+    // Check if this is a new flow or an update
+    if (!empty($data['id'])) {
+        // Update existing flow
+        $stmt = $pdo->prepare("
+            UPDATE flows 
+            SET name = ?, bot_id = ?, flow_data = ?, updated_at = NOW()
+            WHERE id = ? AND user_id = ?
+        ");
+        $stmt->execute([
+            $data['name'],
+            $data['bot_id'],
+            json_encode($data),
+            $data['id'],
+            $_SESSION['user_id']
+        ]);
+        
+        $flowId = $data['id'];
     } else {
-        // Update existing
-        $stmt = $pdo->prepare("UPDATE bot_flows SET " . 
-            implode('=?, ', array_keys($flowData)) . "=? WHERE id=?");
-        $stmt->execute(array_merge(array_values($flowData), [$data['id']]));
+        // Create new flow
+        $stmt = $pdo->prepare("
+            INSERT INTO flows (user_id, bot_id, name, flow_data, created_at, updated_at)
+            VALUES (?, ?, ?, ?, NOW(), NOW())
+        ");
+        $stmt->execute([
+            $_SESSION['user_id'],
+            $data['bot_id'],
+            $data['name'],
+            json_encode($data)
+        ]);
+        
+        $flowId = $pdo->lastInsertId();
     }
 
-    echo json_encode(['success' => true]);
+    echo json_encode([
+        'success' => true,
+        'message' => 'Flow saved successfully',
+        'flow_id' => $flowId
+    ]);
 
 } catch (Exception $e) {
+    http_response_code(400);
     echo json_encode([
         'success' => false,
-        'error' => $e->getMessage()
+        'message' => $e->getMessage()
     ]);
 }

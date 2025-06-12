@@ -6,22 +6,49 @@ redirectIfNotLoggedIn();
 header('Content-Type: application/json');
 
 try {
-    $data = json_decode(file_get_contents('php://input'), true);
-    $flowId = $data['id'];
-    $userId = $_SESSION['user_id'];
+    // Get flow ID from request
+    $flowId = $_GET['id'] ?? null;
+    
+    if (!$flowId) {
+        throw new Exception('Flow ID is required');
+    }
 
-    $stmt = $pdo->prepare("SELECT f.* FROM bot_flows f
-                          JOIN bots b ON f.bot_id = b.id
-                          WHERE f.id = ? AND b.user_id = ?");
-    $stmt->execute([$flowId, $userId]);
+    // Get the flow
+    $stmt = $pdo->prepare("
+        SELECT f.*, b.business_name as bot_name 
+        FROM flows f 
+        LEFT JOIN bots b ON f.bot_id = b.id 
+        WHERE f.id = ? AND f.user_id = ?
+    ");
+    $stmt->execute([$flowId, $_SESSION['user_id']]);
+    $flow = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($flow = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $flow['flow_json'] = json_decode($flow['flow_json']);
-        echo json_encode(['success' => true, 'flow' => $flow]);
-    } else {
+    if (!$flow) {
         throw new Exception('Flow not found');
     }
 
+    // Parse the flow data
+    $flowData = json_decode($flow['flow_data'], true);
+    if (!$flowData) {
+        throw new Exception('Invalid flow data');
+    }
+
+    echo json_encode([
+        'success' => true,
+        'flow' => [
+            'id' => $flow['id'],
+            'name' => $flow['name'],
+            'bot_id' => $flow['bot_id'],
+            'bot_name' => $flow['bot_name'],
+            'nodes' => $flowData['nodes'] ?? [],
+            'connections' => $flowData['connections'] ?? []
+        ]
+    ]);
+
 } catch (Exception $e) {
-    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    http_response_code(400);
+    echo json_encode([
+        'success' => false,
+        'message' => $e->getMessage()
+    ]);
 }

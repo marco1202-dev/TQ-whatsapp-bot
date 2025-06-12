@@ -8,26 +8,30 @@ redirectIfNotLoggedIn();
 header('Content-Type: application/json');
 
 try {
+    // Get POST data
     $data = json_decode(file_get_contents('php://input'), true);
-    $userId = $_SESSION['user_id'];
-
-    if (empty($data['id'])) {
-        throw new Exception('Missing flow ID');
+    
+    if (!$data || empty($data['id'])) {
+        throw new Exception('Flow ID is required');
     }
 
-    // Delete flow only if user owns the bot
-    $stmt = $pdo->prepare("DELETE f FROM bot_flows f
-                          JOIN bots b ON f.bot_id = b.id
-                          WHERE f.id = ? AND b.user_id = ?");
-    $stmt->execute([$data['id'], $userId]);
+    // Delete the flow
+    $stmt = $pdo->prepare("DELETE FROM flows WHERE id = ? AND user_id = ?");
+    $stmt->execute([$data['id'], $_SESSION['user_id']]);
+
+    if ($stmt->rowCount() === 0) {
+        throw new Exception('Flow not found or you do not have permission to delete it');
+    }
 
     echo json_encode([
-        'success' => $stmt->rowCount() > 0
+        'success' => true,
+        'message' => 'Flow deleted successfully'
     ]);
 
 } catch (Exception $e) {
+    http_response_code(400);
     echo json_encode([
         'success' => false,
-        'error' => $e->getMessage()
+        'message' => $e->getMessage()
     ]);
 }

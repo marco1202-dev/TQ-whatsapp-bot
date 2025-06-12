@@ -303,8 +303,8 @@ try {
 
 
 <!-- Add this to your dashboard -->
-<div class="row mt-4" id="chatflow"  style="display:none;">
-    <div class="col-md-4">
+<div class="row mt-4" id="chatflow"  style="display:flex;">
+    <!-- <div class="col-md-4"> -->
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5><i class="fas fa-project-diagram me-2"></i>Chat Flows</h5>
@@ -324,18 +324,18 @@ try {
                 <div id="flowsList" class="list-group"></div>
             </div>
         </div>
-    </div>
+    <!-- </div> -->
 
-    <div class="col-md-8">
+    <!-- <div class="col-md-8"> -->
         <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
+            <!-- <div class="card-header d-flex justify-content-between align-items-center">
                 <h5><i class="fas fa-code me-2"></i>Flow Editor</h5>
                 <button class="btn btn-sm btn-success" id="newFlowBtn">
                     <i class="fas fa-plus me-2"></i>New Flow
                 </button>
-            </div>
+            </div> -->
             <div class="card-body">
-                <form id="flowForm" style="display: none;">
+                <form id="flowForm">
                     <input type="hidden" id="flowId">
                     <div class="mb-3">
                         <label class="form-label">Flow Name</label>
@@ -350,28 +350,33 @@ try {
                             <?php endforeach; ?>
                         </select>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Flow JSON</label>
-                        <div class="input-group">
-                            <textarea class="form-control font-monospace" id="flowJson" rows="15" required></textarea>
-                            <button type="button" class="btn btn-outline-secondary" id="formatJson">
-                                <i class="fas fa-indent"></i>
-                            </button>
+                    
+                    <!-- Flow Builder Interface -->
+                    <div class="flow-builder-container" style="height: 600px; position: relative;">
+                        <!-- <div class="flow-sidebar" style="position: absolute; left: 0; top: 0; width: 250px; height: 100%; background: #128C7E; color: white; padding: 1rem; overflow-y: auto;">
+                            <h3 class="text-white mb-4">Nodes</h3>
+                            <div class="node-item" draggable="true" data-type="text">Simple Text</div>
+                            <div class="node-item" draggable="true" data-type="media">Media Files</div>
+                            <div class="node-item" draggable="true" data-type="buttons">Interactive Buttons</div>
+                            <div class="node-item" draggable="true" data-type="delay">Time Delay</div>
+                            <div class="node-item" draggable="true" data-type="http">HTTP Request</div>
                         </div>
-                        <div class="invalid-feedback" id="jsonError"></div>
+                        <div id="flowCanvas" class="flow-canvas" style="position: absolute; left: 250px; top: 0; right: 0; height: 100%; background: #ECE5DD; overflow: auto;"></div> -->
+                        <iframe  src="https://waassist.io/chat-flow.php"  style="width: 100%; height: 100%; border: none;" allowfullscreen> </iframe>
                     </div>
-                    <div class="d-flex justify-content-between">
+
+                    <!-- <div class="d-flex justify-content-between mt-3">
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-save me-2"></i>Save Flow
                         </button>
                         <button type="button" class="btn btn-danger" id="deleteFlowBtn">
                             <i class="fas fa-trash me-2"></i>Delete
                         </button>
-                    </div>
+                    </div> -->
                 </form>
             </div>
         </div>
-    </div>
+    <!-- </div> -->
 </div>
 
 

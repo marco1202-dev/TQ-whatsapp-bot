@@ -8,37 +8,37 @@ redirectIfNotLoggedIn();
 header('Content-Type: application/json');
 
 try {
-    $data = json_decode(file_get_contents('php://input'), true);
-    $botId = $data['bot_id'] ?? null;
-    $userId = $_SESSION['user_id'];
-
-    $query = "SELECT 
-                f.id, f.flow_name, f.flow_json, f.is_default, f.updated_at,
-                b.id as bot_id, b.business_name
-              FROM bot_flows f
-              JOIN bots b ON f.bot_id = b.id
-              WHERE b.user_id = :user_id";
-    
-    $params = [':user_id' => $userId];
-
-    if ($botId) {
-        $query .= " AND f.bot_id = :bot_id";
-        $params[':bot_id'] = $botId;
-    }
-
-    $stmt = $pdo->prepare($query);
-    $stmt->execute($params);
-
+    // Get all flows for the current user
+    $stmt = $pdo->prepare("
+        SELECT f.*, b.business_name as bot_name 
+        FROM flows f 
+        LEFT JOIN bots b ON f.bot_id = b.id 
+        WHERE f.user_id = ? 
+        ORDER BY f.updated_at DESC
+    ");
+    $stmt->execute([$_SESSION['user_id']]);
     $flows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Format the flows for the frontend
+    $formattedFlows = array_map(function($flow) {
+        return [
+            'id' => $flow['id'],
+            'name' => $flow['name'],
+            'bot_name' => $flow['bot_name'],
+            'created_at' => $flow['created_at'],
+            'updated_at' => $flow['updated_at']
+        ];
+    }, $flows);
 
     echo json_encode([
         'success' => true,
-        'flows' => $flows
+        'flows' => $formattedFlows
     ]);
 
 } catch (Exception $e) {
+    http_response_code(400);
     echo json_encode([
         'success' => false,
-        'error' => $e->getMessage()
+        'message' => $e->getMessage()
     ]);
 }
