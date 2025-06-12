@@ -1,0 +1,98 @@
+=== NEW SESSION STARTED ===
+Raw input:
+{"object":"whatsapp_business_account","entry":[{"id":"1051970416783755","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"96892009371","phone_number_id":"640983692435947"},"contacts":[{"profile":{"name":"TQ"},"wa_id":"96894800957"}],"messages":[{"context":{"from":"96892009371","id":"wamid.HBgLOTY4OTQ4MDA5NTcVAgARGBIzRTI1RkE3MDM4ODIxMzk3NEIA"},"from":"96894800957","id":"wamid.HBgLOTY4OTQ4MDA5NTcVAgASGBQzQTA4Q0JCRjk1QUEzRTQ1QUJGNgA=","timestamp":"1746899266","type":"interactive","interactive":{"type":"button_reply","button_reply":{"id":"contact_support","title":"Contact Support"}}}]},"field":"messages"}]}]}
+
+Decoded data:
+Array
+(
+    [object] => whatsapp_business_account
+    [entry] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 1051970416783755
+                    [changes] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [value] => Array
+                                        (
+                                            [messaging_product] => whatsapp
+                                            [metadata] => Array
+                                                (
+                                                    [display_phone_number] => 96892009371
+                                                    [phone_number_id] => 640983692435947
+                                                )
+
+                                            [contacts] => Array
+                                                (
+                                                    [0] => Array
+                                                        (
+                                                            [profile] => Array
+                                                                (
+                                                                    [name] => TQ
+                                                                )
+
+                                                            [wa_id] => 96894800957
+                                                        )
+
+                                                )
+
+                                            [messages] => Array
+                                                (
+                                                    [0] => Array
+                                                        (
+                                                            [context] => Array
+                                                                (
+                                                                    [from] => 96892009371
+                                                                    [id] => wamid.HBgLOTY4OTQ4MDA5NTcVAgARGBIzRTI1RkE3MDM4ODIxMzk3NEIA
+                                                                )
+
+                                                            [from] => 96894800957
+                                                            [id] => wamid.HBgLOTY4OTQ4MDA5NTcVAgASGBQzQTA4Q0JCRjk1QUEzRTQ1QUJGNgA=
+                                                            [timestamp] => 1746899266
+                                                            [type] => interactive
+                                                            [interactive] => Array
+                                                                (
+                                                                    [type] => button_reply
+                                                                    [button_reply] => Array
+                                                                        (
+                                                                            [id] => contact_support
+                                                                            [title] => Contact Support
+                                                                        )
+
+                                                                )
+
+                                                        )
+
+                                                )
+
+                                        )
+
+                                    [field] => messages
+                                )
+
+                        )
+
+                )
+
+        )
+
+)
+
+Processing message from 96894800957
+Interactive message detected
+Full interactive structure:
+Array
+(
+    [type] => button_reply
+    [button_reply] => Array
+        (
+            [id] => contact_support
+            [title] => Contact Support
+        )
+
+)
+
+Button ID received: contact_support
+Contact support button clicked

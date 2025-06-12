@@ -1,0 +1,121 @@
+=== NEW SESSION STARTED ===
+Raw input:
+{"object":"whatsapp_business_account","entry":[{"id":"1051970416783755","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"96892009371","phone_number_id":"640983692435947"},"statuses":[{"id":"wamid.HBgLOTY4OTQ4MDA5MzAVAgARGBJCODA0NEM2NTZDNkM3MTFGODQA","status":"delivered","timestamp":"1746899414","recipient_id":"96894800930","conversation":{"id":"6d21fd23c0ee04bcc6cfa765dc7755e3","origin":{"type":"service"}},"pricing":{"billable":true,"pricing_model":"CBP","category":"service"}}]},"field":"messages"}]}]}
+
+Decoded data:
+Array
+(
+    [object] => whatsapp_business_account
+    [entry] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 1051970416783755
+                    [changes] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [value] => Array
+                                        (
+                                            [messaging_product] => whatsapp
+                                            [metadata] => Array
+                                                (
+                                                    [display_phone_number] => 96892009371
+                                                    [phone_number_id] => 640983692435947
+                                                )
+
+                                            [statuses] => Array
+                                                (
+                                                    [0] => Array
+                                                        (
+                                                            [id] => wamid.HBgLOTY4OTQ4MDA5MzAVAgARGBJCODA0NEM2NTZDNkM3MTFGODQA
+                                                            [status] => delivered
+                                                            [timestamp] => 1746899414
+                                                            [recipient_id] => 96894800930
+                                                            [conversation] => Array
+                                                                (
+                                                                    [id] => 6d21fd23c0ee04bcc6cfa765dc7755e3
+                                                                    [origin] => Array
+                                                                        (
+                                                                            [type] => service
+                                                                        )
+
+                                                                )
+
+                                                            [pricing] => Array
+                                                                (
+                                                                    [billable] => 1
+                                                                    [pricing_model] => CBP
+                                                                    [category] => service
+                                                                )
+
+                                                        )
+
+                                                )
+
+                                        )
+
+                                    [field] => messages
+                                )
+
+                        )
+
+                )
+
+        )
+
+)
+
+No message found in payload
+=== NEW SESSION STARTED ===
+Raw input:
+{"object":"whatsapp_business_account","entry":[{"id":"1051970416783755","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"96892009371","phone_number_id":"640983692435947"},"statuses":[{"id":"wamid.HBgLOTY4OTQ4MDA5MzAVAgARGBJCODA0NEM2NTZDNkM3MTFGODQA","status":"read","timestamp":"1746899414","recipient_id":"96894800930"}]},"field":"messages"}]}]}
+
+Decoded data:
+Array
+(
+    [object] => whatsapp_business_account
+    [entry] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 1051970416783755
+                    [changes] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [value] => Array
+                                        (
+                                            [messaging_product] => whatsapp
+                                            [metadata] => Array
+                                                (
+                                                    [display_phone_number] => 96892009371
+                                                    [phone_number_id] => 640983692435947
+                                                )
+
+                                            [statuses] => Array
+                                                (
+                                                    [0] => Array
+                                                        (
+                                                            [id] => wamid.HBgLOTY4OTQ4MDA5MzAVAgARGBJCODA0NEM2NTZDNkM3MTFGODQA
+                                                            [status] => read
+                                                            [timestamp] => 1746899414
+                                                            [recipient_id] => 96894800930
+                                                        )
+
+                                                )
+
+                                        )
+
+                                    [field] => messages
+                                )
+
+                        )
+
+                )
+
+        )
+
+)
+
+No message found in payload

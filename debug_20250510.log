@@ -1,0 +1,1071 @@
+2025-05-10 17:22:40 - Script started
+2025-05-10 17:22:40 - Raw input:
+{"object":"whatsapp_business_account","entry":[{"id":"1051970416783755","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"96892009371","phone_number_id":"640983692435947"},"contacts":[{"profile":{"name":"K"},"wa_id":"917292055714"}],"messages":[{"from":"917292055714","id":"wamid.HBgMOTE3MjkyMDU1NzE0FQIAEhgUM0ZERTA1QzlEMEYyQjAyOTBDN0MA","timestamp":"1746897760","text":{"body":"hi"},"type":"text"}]},"field":"messages"}]}]}
+2025-05-10 17:22:40 - Decoded input:
+Array
+(
+    [object] => whatsapp_business_account
+    [entry] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 1051970416783755
+                    [changes] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [value] => Array
+                                        (
+                                            [messaging_product] => whatsapp
+                                            [metadata] => Array
+                                                (
+                                                    [display_phone_number] => 96892009371
+                                                    [phone_number_id] => 640983692435947
+                                                )
+
+                                            [contacts] => Array
+                                                (
+                                                    [0] => Array
+                                                        (
+                                                            [profile] => Array
+                                                                (
+                                                                    [name] => K
+                                                                )
+
+                                                            [wa_id] => 917292055714
+                                                        )
+
+                                                )
+
+                                            [messages] => Array
+                                                (
+                                                    [0] => Array
+                                                        (
+                                                            [from] => 917292055714
+                                                            [id] => wamid.HBgMOTE3MjkyMDU1NzE0FQIAEhgUM0ZERTA1QzlEMEYyQjAyOTBDN0MA
+                                                            [timestamp] => 1746897760
+                                                            [text] => Array
+                                                                (
+                                                                    [body] => hi
+                                                                )
+
+                                                            [type] => text
+                                                        )
+
+                                                )
+
+                                        )
+
+                                    [field] => messages
+                                )
+
+                        )
+
+                )
+
+        )
+
+)
+
+2025-05-10 17:22:40 - Message received:
+Array
+(
+    [from] => 917292055714
+    [id] => wamid.HBgMOTE3MjkyMDU1NzE0FQIAEhgUM0ZERTA1QzlEMEYyQjAyOTBDN0MA
+    [timestamp] => 1746897760
+    [text] => Array
+        (
+            [body] => hi
+        )
+
+    [type] => text
+)
+
+2025-05-10 17:22:40 - Sending main menu to 917292055714
+2025-05-10 17:22:40 - Preparing to send:
+{
+    "messaging_product": "whatsapp",
+    "recipient_type": "individual",
+    "to": "917292055714",
+    "type": "interactive",
+    "interactive": {
+        "type": "button",
+        "body": {
+            "text": "\u2615 *Welcome to Coffee Beans!*\nWhat would you like to do today?"
+        },
+        "action": {
+            "buttons": [
+                {
+                    "type": "reply",
+                    "reply": {
+                        "id": "browse_products",
+                        "title": "Browse Products"
+                    }
+                },
+                {
+                    "type": "reply",
+                    "reply": {
+                        "id": "track_order",
+                        "title": "Track Order"
+                    }
+                },
+                {
+                    "type": "reply",
+                    "reply": {
+                        "id": "contact_support",
+                        "title": "Contact Support"
+                    }
+                }
+            ]
+        }
+    }
+}
+2025-05-10 17:22:41 - API Response (200): {"messaging_product":"whatsapp","contacts":[{"input":"917292055714","wa_id":"917292055714"}],"messages":[{"id":"wamid.HBgMOTE3MjkyMDU1NzE0FQIAERgSMDAwMDcxOTBBMTJGMDAyMEZCAA=="}]}
+2025-05-10 17:22:42 - Script started
+2025-05-10 17:22:42 - Raw input:
+{"object":"whatsapp_business_account","entry":[{"id":"1051970416783755","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"96892009371","phone_number_id":"640983692435947"},"statuses":[{"id":"wamid.HBgMOTE3MjkyMDU1NzE0FQIAERgSMDAwMDcxOTBBMTJGMDAyMEZCAA==","status":"sent","timestamp":"1746897761","recipient_id":"917292055714","conversation":{"id":"71262548656ce368539cd9ef515741e8","expiration_timestamp":"1746982200","origin":{"type":"service"}},"pricing":{"billable":true,"pricing_model":"CBP","category":"service"}}]},"field":"messages"}]}]}
+2025-05-10 17:22:42 - Decoded input:
+Array
+(
+    [object] => whatsapp_business_account
+    [entry] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 1051970416783755
+                    [changes] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [value] => Array
+                                        (
+                                            [messaging_product] => whatsapp
+                                            [metadata] => Array
+                                                (
+                                                    [display_phone_number] => 96892009371
+                                                    [phone_number_id] => 640983692435947
+                                                )
+
+                                            [statuses] => Array
+                                                (
+                                                    [0] => Array
+                                                        (
+                                                            [id] => wamid.HBgMOTE3MjkyMDU1NzE0FQIAERgSMDAwMDcxOTBBMTJGMDAyMEZCAA==
+                                                            [status] => sent
+                                                            [timestamp] => 1746897761
+                                                            [recipient_id] => 917292055714
+                                                            [conversation] => Array
+                                                                (
+                                                                    [id] => 71262548656ce368539cd9ef515741e8
+                                                                    [expiration_timestamp] => 1746982200
+                                                                    [origin] => Array
+                                                                        (
+                                                                            [type] => service
+                                                                        )
+
+                                                                )
+
+                                                            [pricing] => Array
+                                                                (
+                                                                    [billable] => 1
+                                                                    [pricing_model] => CBP
+                                                                    [category] => service
+                                                                )
+
+                                                        )
+
+                                                )
+
+                                        )
+
+                                    [field] => messages
+                                )
+
+                        )
+
+                )
+
+        )
+
+)
+
+2025-05-10 17:22:42 - No valid message found in payload
+2025-05-10 17:22:42 - Script started
+2025-05-10 17:22:42 - Raw input:
+{"object":"whatsapp_business_account","entry":[{"id":"1051970416783755","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"96892009371","phone_number_id":"640983692435947"},"statuses":[{"id":"wamid.HBgMOTE3MjkyMDU1NzE0FQIAERgSMDAwMDcxOTBBMTJGMDAyMEZCAA==","status":"delivered","timestamp":"1746897762","recipient_id":"917292055714"}]},"field":"messages"}]}]}
+2025-05-10 17:22:42 - Decoded input:
+Array
+(
+    [object] => whatsapp_business_account
+    [entry] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 1051970416783755
+                    [changes] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [value] => Array
+                                        (
+                                            [messaging_product] => whatsapp
+                                            [metadata] => Array
+                                                (
+                                                    [display_phone_number] => 96892009371
+                                                    [phone_number_id] => 640983692435947
+                                                )
+
+                                            [statuses] => Array
+                                                (
+                                                    [0] => Array
+                                                        (
+                                                            [id] => wamid.HBgMOTE3MjkyMDU1NzE0FQIAERgSMDAwMDcxOTBBMTJGMDAyMEZCAA==
+                                                            [status] => delivered
+                                                            [timestamp] => 1746897762
+                                                            [recipient_id] => 917292055714
+                                                        )
+
+                                                )
+
+                                        )
+
+                                    [field] => messages
+                                )
+
+                        )
+
+                )
+
+        )
+
+)
+
+2025-05-10 17:22:42 - No valid message found in payload
+2025-05-10 17:22:43 - Script started
+2025-05-10 17:22:43 - Raw input:
+{"object":"whatsapp_business_account","entry":[{"id":"1051970416783755","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"96892009371","phone_number_id":"640983692435947"},"statuses":[{"id":"wamid.HBgMOTE3MjkyMDU1NzE0FQIAERgSMDAwMDcxOTBBMTJGMDAyMEZCAA==","status":"delivered","timestamp":"1746897763","recipient_id":"917292055714","conversation":{"id":"71262548656ce368539cd9ef515741e8","origin":{"type":"service"}},"pricing":{"billable":true,"pricing_model":"CBP","category":"service"}}]},"field":"messages"}]}]}
+2025-05-10 17:22:43 - Decoded input:
+Array
+(
+    [object] => whatsapp_business_account
+    [entry] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 1051970416783755
+                    [changes] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [value] => Array
+                                        (
+                                            [messaging_product] => whatsapp
+                                            [metadata] => Array
+                                                (
+                                                    [display_phone_number] => 96892009371
+                                                    [phone_number_id] => 640983692435947
+                                                )
+
+                                            [statuses] => Array
+                                                (
+                                                    [0] => Array
+                                                        (
+                                                            [id] => wamid.HBgMOTE3MjkyMDU1NzE0FQIAERgSMDAwMDcxOTBBMTJGMDAyMEZCAA==
+                                                            [status] => delivered
+                                                            [timestamp] => 1746897763
+                                                            [recipient_id] => 917292055714
+                                                            [conversation] => Array
+                                                                (
+                                                                    [id] => 71262548656ce368539cd9ef515741e8
+                                                                    [origin] => Array
+                                                                        (
+                                                                            [type] => service
+                                                                        )
+
+                                                                )
+
+                                                            [pricing] => Array
+                                                                (
+                                                                    [billable] => 1
+                                                                    [pricing_model] => CBP
+                                                                    [category] => service
+                                                                )
+
+                                                        )
+
+                                                )
+
+                                        )
+
+                                    [field] => messages
+                                )
+
+                        )
+
+                )
+
+        )
+
+)
+
+2025-05-10 17:22:43 - No valid message found in payload
+2025-05-10 17:23:13 - Script started
+2025-05-10 17:23:13 - Raw input:
+{"object":"whatsapp_business_account","entry":[{"id":"1051970416783755","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"96892009371","phone_number_id":"640983692435947"},"contacts":[{"profile":{"name":"K"},"wa_id":"917292055714"}],"messages":[{"context":{"from":"96892009371","id":"wamid.HBgMOTE3MjkyMDU1NzE0FQIAERgSMDAwMDcxOTBBMTJGMDAyMEZCAA=="},"from":"917292055714","id":"wamid.HBgMOTE3MjkyMDU1NzE0FQIAEhggRUM3RTgxQkJGRDI0REZCRDk5ODkzNjIyNjNERkIwMUIA","timestamp":"1746897792","type":"interactive","interactive":{"type":"button_reply","button_reply":{"id":"browse_products","title":"Browse Products"}}}]},"field":"messages"}]}]}
+2025-05-10 17:23:13 - Decoded input:
+Array
+(
+    [object] => whatsapp_business_account
+    [entry] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 1051970416783755
+                    [changes] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [value] => Array
+                                        (
+                                            [messaging_product] => whatsapp
+                                            [metadata] => Array
+                                                (
+                                                    [display_phone_number] => 96892009371
+                                                    [phone_number_id] => 640983692435947
+                                                )
+
+                                            [contacts] => Array
+                                                (
+                                                    [0] => Array
+                                                        (
+                                                            [profile] => Array
+                                                                (
+                                                                    [name] => K
+                                                                )
+
+                                                            [wa_id] => 917292055714
+                                                        )
+
+                                                )
+
+                                            [messages] => Array
+                                                (
+                                                    [0] => Array
+                                                        (
+                                                            [context] => Array
+                                                                (
+                                                                    [from] => 96892009371
+                                                                    [id] => wamid.HBgMOTE3MjkyMDU1NzE0FQIAERgSMDAwMDcxOTBBMTJGMDAyMEZCAA==
+                                                                )
+
+                                                            [from] => 917292055714
+                                                            [id] => wamid.HBgMOTE3MjkyMDU1NzE0FQIAEhggRUM3RTgxQkJGRDI0REZCRDk5ODkzNjIyNjNERkIwMUIA
+                                                            [timestamp] => 1746897792
+                                                            [type] => interactive
+                                                            [interactive] => Array
+                                                                (
+                                                                    [type] => button_reply
+                                                                    [button_reply] => Array
+                                                                        (
+                                                                            [id] => browse_products
+                                                                            [title] => Browse Products
+                                                                        )
+
+                                                                )
+
+                                                        )
+
+                                                )
+
+                                        )
+
+                                    [field] => messages
+                                )
+
+                        )
+
+                )
+
+        )
+
+)
+
+2025-05-10 17:23:13 - Message received:
+Array
+(
+    [context] => Array
+        (
+            [from] => 96892009371
+            [id] => wamid.HBgMOTE3MjkyMDU1NzE0FQIAERgSMDAwMDcxOTBBMTJGMDAyMEZCAA==
+        )
+
+    [from] => 917292055714
+    [id] => wamid.HBgMOTE3MjkyMDU1NzE0FQIAEhggRUM3RTgxQkJGRDI0REZCRDk5ODkzNjIyNjNERkIwMUIA
+    [timestamp] => 1746897792
+    [type] => interactive
+    [interactive] => Array
+        (
+            [type] => button_reply
+            [button_reply] => Array
+                (
+                    [id] => browse_products
+                    [title] => Browse Products
+                )
+
+        )
+
+)
+
+2025-05-10 17:23:13 - Button pressed: browse_products
+2025-05-10 17:23:25 - Script started
+2025-05-10 17:23:25 - Raw input:
+{"object":"whatsapp_business_account","entry":[{"id":"1051970416783755","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"96892009371","phone_number_id":"640983692435947"},"contacts":[{"profile":{"name":"K"},"wa_id":"917292055714"}],"messages":[{"context":{"from":"96892009371","id":"wamid.HBgMOTE3MjkyMDU1NzE0FQIAERgSMDAwMDcxOTBBMTJGMDAyMEZCAA=="},"from":"917292055714","id":"wamid.HBgMOTE3MjkyMDU1NzE0FQIAEhggRTc4M0ExRjc3OUFGM0ZCNTI5NDI4RUU2NUNCQ0NBMUEA","timestamp":"1746897804","type":"interactive","interactive":{"type":"button_reply","button_reply":{"id":"track_order","title":"Track Order"}}}]},"field":"messages"}]}]}
+2025-05-10 17:23:25 - Decoded input:
+Array
+(
+    [object] => whatsapp_business_account
+    [entry] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 1051970416783755
+                    [changes] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [value] => Array
+                                        (
+                                            [messaging_product] => whatsapp
+                                            [metadata] => Array
+                                                (
+                                                    [display_phone_number] => 96892009371
+                                                    [phone_number_id] => 640983692435947
+                                                )
+
+                                            [contacts] => Array
+                                                (
+                                                    [0] => Array
+                                                        (
+                                                            [profile] => Array
+                                                                (
+                                                                    [name] => K
+                                                                )
+
+                                                            [wa_id] => 917292055714
+                                                        )
+
+                                                )
+
+                                            [messages] => Array
+                                                (
+                                                    [0] => Array
+                                                        (
+                                                            [context] => Array
+                                                                (
+                                                                    [from] => 96892009371
+                                                                    [id] => wamid.HBgMOTE3MjkyMDU1NzE0FQIAERgSMDAwMDcxOTBBMTJGMDAyMEZCAA==
+                                                                )
+
+                                                            [from] => 917292055714
+                                                            [id] => wamid.HBgMOTE3MjkyMDU1NzE0FQIAEhggRTc4M0ExRjc3OUFGM0ZCNTI5NDI4RUU2NUNCQ0NBMUEA
+                                                            [timestamp] => 1746897804
+                                                            [type] => interactive
+                                                            [interactive] => Array
+                                                                (
+                                                                    [type] => button_reply
+                                                                    [button_reply] => Array
+                                                                        (
+                                                                            [id] => track_order
+                                                                            [title] => Track Order
+                                                                        )
+
+                                                                )
+
+                                                        )
+
+                                                )
+
+                                        )
+
+                                    [field] => messages
+                                )
+
+                        )
+
+                )
+
+        )
+
+)
+
+2025-05-10 17:23:25 - Message received:
+Array
+(
+    [context] => Array
+        (
+            [from] => 96892009371
+            [id] => wamid.HBgMOTE3MjkyMDU1NzE0FQIAERgSMDAwMDcxOTBBMTJGMDAyMEZCAA==
+        )
+
+    [from] => 917292055714
+    [id] => wamid.HBgMOTE3MjkyMDU1NzE0FQIAEhggRTc4M0ExRjc3OUFGM0ZCNTI5NDI4RUU2NUNCQ0NBMUEA
+    [timestamp] => 1746897804
+    [type] => interactive
+    [interactive] => Array
+        (
+            [type] => button_reply
+            [button_reply] => Array
+                (
+                    [id] => track_order
+                    [title] => Track Order
+                )
+
+        )
+
+)
+
+2025-05-10 17:23:25 - Button pressed: track_order
+2025-05-10 17:23:28 - Script started
+2025-05-10 17:23:28 - Raw input:
+{"object":"whatsapp_business_account","entry":[{"id":"1051970416783755","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"96892009371","phone_number_id":"640983692435947"},"contacts":[{"profile":{"name":"K"},"wa_id":"917292055714"}],"messages":[{"context":{"from":"96892009371","id":"wamid.HBgMOTE3MjkyMDU1NzE0FQIAERgSMDAwMDcxOTBBMTJGMDAyMEZCAA=="},"from":"917292055714","id":"wamid.HBgMOTE3MjkyMDU1NzE0FQIAEhggOTM5MzkwN0E5QkE3QjBGRTQzRUNCNjhCRDVGMTlCMTgA","timestamp":"1746897807","type":"interactive","interactive":{"type":"button_reply","button_reply":{"id":"contact_support","title":"Contact Support"}}}]},"field":"messages"}]}]}
+2025-05-10 17:23:28 - Decoded input:
+Array
+(
+    [object] => whatsapp_business_account
+    [entry] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 1051970416783755
+                    [changes] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [value] => Array
+                                        (
+                                            [messaging_product] => whatsapp
+                                            [metadata] => Array
+                                                (
+                                                    [display_phone_number] => 96892009371
+                                                    [phone_number_id] => 640983692435947
+                                                )
+
+                                            [contacts] => Array
+                                                (
+                                                    [0] => Array
+                                                        (
+                                                            [profile] => Array
+                                                                (
+                                                                    [name] => K
+                                                                )
+
+                                                            [wa_id] => 917292055714
+                                                        )
+
+                                                )
+
+                                            [messages] => Array
+                                                (
+                                                    [0] => Array
+                                                        (
+                                                            [context] => Array
+                                                                (
+                                                                    [from] => 96892009371
+                                                                    [id] => wamid.HBgMOTE3MjkyMDU1NzE0FQIAERgSMDAwMDcxOTBBMTJGMDAyMEZCAA==
+                                                                )
+
+                                                            [from] => 917292055714
+                                                            [id] => wamid.HBgMOTE3MjkyMDU1NzE0FQIAEhggOTM5MzkwN0E5QkE3QjBGRTQzRUNCNjhCRDVGMTlCMTgA
+                                                            [timestamp] => 1746897807
+                                                            [type] => interactive
+                                                            [interactive] => Array
+                                                                (
+                                                                    [type] => button_reply
+                                                                    [button_reply] => Array
+                                                                        (
+                                                                            [id] => contact_support
+                                                                            [title] => Contact Support
+                                                                        )
+
+                                                                )
+
+                                                        )
+
+                                                )
+
+                                        )
+
+                                    [field] => messages
+                                )
+
+                        )
+
+                )
+
+        )
+
+)
+
+2025-05-10 17:23:28 - Message received:
+Array
+(
+    [context] => Array
+        (
+            [from] => 96892009371
+            [id] => wamid.HBgMOTE3MjkyMDU1NzE0FQIAERgSMDAwMDcxOTBBMTJGMDAyMEZCAA==
+        )
+
+    [from] => 917292055714
+    [id] => wamid.HBgMOTE3MjkyMDU1NzE0FQIAEhggOTM5MzkwN0E5QkE3QjBGRTQzRUNCNjhCRDVGMTlCMTgA
+    [timestamp] => 1746897807
+    [type] => interactive
+    [interactive] => Array
+        (
+            [type] => button_reply
+            [button_reply] => Array
+                (
+                    [id] => contact_support
+                    [title] => Contact Support
+                )
+
+        )
+
+)
+
+2025-05-10 17:23:28 - Button pressed: contact_support
+2025-05-10 17:26:01 - Script started
+2025-05-10 17:26:01 - Raw input:
+{"object":"whatsapp_business_account","entry":[{"id":"1051970416783755","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"96892009371","phone_number_id":"640983692435947"},"contacts":[{"profile":{"name":"K"},"wa_id":"917292055714"}],"messages":[{"from":"917292055714","id":"wamid.HBgMOTE3MjkyMDU1NzE0FQIAEhgUM0ZGQUI1OEQ4Nzg3NDgxMjc0NjkA","timestamp":"1746897528","text":{"body":"hi"},"type":"text"}]},"field":"messages"}]}]}
+2025-05-10 17:26:01 - Decoded input:
+Array
+(
+    [object] => whatsapp_business_account
+    [entry] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 1051970416783755
+                    [changes] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [value] => Array
+                                        (
+                                            [messaging_product] => whatsapp
+                                            [metadata] => Array
+                                                (
+                                                    [display_phone_number] => 96892009371
+                                                    [phone_number_id] => 640983692435947
+                                                )
+
+                                            [contacts] => Array
+                                                (
+                                                    [0] => Array
+                                                        (
+                                                            [profile] => Array
+                                                                (
+                                                                    [name] => K
+                                                                )
+
+                                                            [wa_id] => 917292055714
+                                                        )
+
+                                                )
+
+                                            [messages] => Array
+                                                (
+                                                    [0] => Array
+                                                        (
+                                                            [from] => 917292055714
+                                                            [id] => wamid.HBgMOTE3MjkyMDU1NzE0FQIAEhgUM0ZGQUI1OEQ4Nzg3NDgxMjc0NjkA
+                                                            [timestamp] => 1746897528
+                                                            [text] => Array
+                                                                (
+                                                                    [body] => hi
+                                                                )
+
+                                                            [type] => text
+                                                        )
+
+                                                )
+
+                                        )
+
+                                    [field] => messages
+                                )
+
+                        )
+
+                )
+
+        )
+
+)
+
+2025-05-10 17:26:01 - Message received:
+Array
+(
+    [from] => 917292055714
+    [id] => wamid.HBgMOTE3MjkyMDU1NzE0FQIAEhgUM0ZGQUI1OEQ4Nzg3NDgxMjc0NjkA
+    [timestamp] => 1746897528
+    [text] => Array
+        (
+            [body] => hi
+        )
+
+    [type] => text
+)
+
+2025-05-10 17:26:01 - Sending main menu to 917292055714
+2025-05-10 17:26:01 - Preparing to send:
+{
+    "messaging_product": "whatsapp",
+    "recipient_type": "individual",
+    "to": "917292055714",
+    "type": "interactive",
+    "interactive": {
+        "type": "button",
+        "body": {
+            "text": "\u2615 *Welcome to Coffee Beans!*\nWhat would you like to do today?"
+        },
+        "action": {
+            "buttons": [
+                {
+                    "type": "reply",
+                    "reply": {
+                        "id": "browse_products",
+                        "title": "Browse Products"
+                    }
+                },
+                {
+                    "type": "reply",
+                    "reply": {
+                        "id": "track_order",
+                        "title": "Track Order"
+                    }
+                },
+                {
+                    "type": "reply",
+                    "reply": {
+                        "id": "contact_support",
+                        "title": "Contact Support"
+                    }
+                }
+            ]
+        }
+    }
+}
+2025-05-10 17:26:01 - API Response (200): {"messaging_product":"whatsapp","contacts":[{"input":"917292055714","wa_id":"917292055714"}],"messages":[{"id":"wamid.HBgMOTE3MjkyMDU1NzE0FQIAERgSNzMzMTNENUNFNzBBNjk0NkM0AA=="}]}
+2025-05-10 17:26:02 - Script started
+2025-05-10 17:26:02 - Raw input:
+{"object":"whatsapp_business_account","entry":[{"id":"1051970416783755","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"96892009371","phone_number_id":"640983692435947"},"statuses":[{"id":"wamid.HBgMOTE3MjkyMDU1NzE0FQIAERgSNzMzMTNENUNFNzBBNjk0NkM0AA==","status":"sent","timestamp":"1746897961","recipient_id":"917292055714","conversation":{"id":"71262548656ce368539cd9ef515741e8","expiration_timestamp":"1746982200","origin":{"type":"service"}},"pricing":{"billable":true,"pricing_model":"CBP","category":"service"}}]},"field":"messages"}]}]}
+2025-05-10 17:26:02 - Decoded input:
+Array
+(
+    [object] => whatsapp_business_account
+    [entry] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 1051970416783755
+                    [changes] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [value] => Array
+                                        (
+                                            [messaging_product] => whatsapp
+                                            [metadata] => Array
+                                                (
+                                                    [display_phone_number] => 96892009371
+                                                    [phone_number_id] => 640983692435947
+                                                )
+
+                                            [statuses] => Array
+                                                (
+                                                    [0] => Array
+                                                        (
+                                                            [id] => wamid.HBgMOTE3MjkyMDU1NzE0FQIAERgSNzMzMTNENUNFNzBBNjk0NkM0AA==
+                                                            [status] => sent
+                                                            [timestamp] => 1746897961
+                                                            [recipient_id] => 917292055714
+                                                            [conversation] => Array
+                                                                (
+                                                                    [id] => 71262548656ce368539cd9ef515741e8
+                                                                    [expiration_timestamp] => 1746982200
+                                                                    [origin] => Array
+                                                                        (
+                                                                            [type] => service
+                                                                        )
+
+                                                                )
+
+                                                            [pricing] => Array
+                                                                (
+                                                                    [billable] => 1
+                                                                    [pricing_model] => CBP
+                                                                    [category] => service
+                                                                )
+
+                                                        )
+
+                                                )
+
+                                        )
+
+                                    [field] => messages
+                                )
+
+                        )
+
+                )
+
+        )
+
+)
+
+2025-05-10 17:26:02 - No valid message found in payload
+2025-05-10 17:26:02 - Script started
+2025-05-10 17:26:02 - Raw input:
+{"object":"whatsapp_business_account","entry":[{"id":"1051970416783755","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"96892009371","phone_number_id":"640983692435947"},"statuses":[{"id":"wamid.HBgMOTE3MjkyMDU1NzE0FQIAERgSNzMzMTNENUNFNzBBNjk0NkM0AA==","status":"delivered","timestamp":"1746897962","recipient_id":"917292055714","conversation":{"id":"71262548656ce368539cd9ef515741e8","origin":{"type":"service"}},"pricing":{"billable":true,"pricing_model":"CBP","category":"service"}}]},"field":"messages"}]}]}
+2025-05-10 17:26:02 - Decoded input:
+Array
+(
+    [object] => whatsapp_business_account
+    [entry] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 1051970416783755
+                    [changes] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [value] => Array
+                                        (
+                                            [messaging_product] => whatsapp
+                                            [metadata] => Array
+                                                (
+                                                    [display_phone_number] => 96892009371
+                                                    [phone_number_id] => 640983692435947
+                                                )
+
+                                            [statuses] => Array
+                                                (
+                                                    [0] => Array
+                                                        (
+                                                            [id] => wamid.HBgMOTE3MjkyMDU1NzE0FQIAERgSNzMzMTNENUNFNzBBNjk0NkM0AA==
+                                                            [status] => delivered
+                                                            [timestamp] => 1746897962
+                                                            [recipient_id] => 917292055714
+                                                            [conversation] => Array
+                                                                (
+                                                                    [id] => 71262548656ce368539cd9ef515741e8
+                                                                    [origin] => Array
+                                                                        (
+                                                                            [type] => service
+                                                                        )
+
+                                                                )
+
+                                                            [pricing] => Array
+                                                                (
+                                                                    [billable] => 1
+                                                                    [pricing_model] => CBP
+                                                                    [category] => service
+                                                                )
+
+                                                        )
+
+                                                )
+
+                                        )
+
+                                    [field] => messages
+                                )
+
+                        )
+
+                )
+
+        )
+
+)
+
+2025-05-10 17:26:02 - No valid message found in payload
+2025-05-10 17:26:02 - Script started
+2025-05-10 17:26:02 - Raw input:
+{"object":"whatsapp_business_account","entry":[{"id":"1051970416783755","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"96892009371","phone_number_id":"640983692435947"},"statuses":[{"id":"wamid.HBgMOTE3MjkyMDU1NzE0FQIAERgSNzMzMTNENUNFNzBBNjk0NkM0AA==","status":"delivered","timestamp":"1746897962","recipient_id":"917292055714","conversation":{"id":"71262548656ce368539cd9ef515741e8","origin":{"type":"service"}},"pricing":{"billable":true,"pricing_model":"CBP","category":"service"}}]},"field":"messages"}]}]}
+2025-05-10 17:26:02 - Decoded input:
+Array
+(
+    [object] => whatsapp_business_account
+    [entry] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 1051970416783755
+                    [changes] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [value] => Array
+                                        (
+                                            [messaging_product] => whatsapp
+                                            [metadata] => Array
+                                                (
+                                                    [display_phone_number] => 96892009371
+                                                    [phone_number_id] => 640983692435947
+                                                )
+
+                                            [statuses] => Array
+                                                (
+                                                    [0] => Array
+                                                        (
+                                                            [id] => wamid.HBgMOTE3MjkyMDU1NzE0FQIAERgSNzMzMTNENUNFNzBBNjk0NkM0AA==
+                                                            [status] => delivered
+                                                            [timestamp] => 1746897962
+                                                            [recipient_id] => 917292055714
+                                                            [conversation] => Array
+                                                                (
+                                                                    [id] => 71262548656ce368539cd9ef515741e8
+                                                                    [origin] => Array
+                                                                        (
+                                                                            [type] => service
+                                                                        )
+
+                                                                )
+
+                                                            [pricing] => Array
+                                                                (
+                                                                    [billable] => 1
+                                                                    [pricing_model] => CBP
+                                                                    [category] => service
+                                                                )
+
+                                                        )
+
+                                                )
+
+                                        )
+
+                                    [field] => messages
+                                )
+
+                        )
+
+                )
+
+        )
+
+)
+
+2025-05-10 17:26:02 - No valid message found in payload
+2025-05-10 17:26:18 - Script started
+2025-05-10 17:26:18 - Raw input:
+{"object":"whatsapp_business_account","entry":[{"id":"1051970416783755","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"96892009371","phone_number_id":"640983692435947"},"contacts":[{"profile":{"name":"K"},"wa_id":"917292055714"}],"messages":[{"context":{"from":"96892009371","id":"wamid.HBgMOTE3MjkyMDU1NzE0FQIAERgSNzMzMTNENUNFNzBBNjk0NkM0AA=="},"from":"917292055714","id":"wamid.HBgMOTE3MjkyMDU1NzE0FQIAEhggN0Y4OUE1MDM4MjJBNjVCRDU5MzkzN0E4MjY1MTk5QzEA","timestamp":"1746897977","type":"interactive","interactive":{"type":"button_reply","button_reply":{"id":"browse_products","title":"Browse Products"}}}]},"field":"messages"}]}]}
+2025-05-10 17:26:18 - Decoded input:
+Array
+(
+    [object] => whatsapp_business_account
+    [entry] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 1051970416783755
+                    [changes] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [value] => Array
+                                        (
+                                            [messaging_product] => whatsapp
+                                            [metadata] => Array
+                                                (
+                                                    [display_phone_number] => 96892009371
+                                                    [phone_number_id] => 640983692435947
+                                                )
+
+                                            [contacts] => Array
+                                                (
+                                                    [0] => Array
+                                                        (
+                                                            [profile] => Array
+                                                                (
+                                                                    [name] => K
+                                                                )
+
+                                                            [wa_id] => 917292055714
+                                                        )
+
+                                                )
+
+                                            [messages] => Array
+                                                (
+                                                    [0] => Array
+                                                        (
+                                                            [context] => Array
+                                                                (
+                                                                    [from] => 96892009371
+                                                                    [id] => wamid.HBgMOTE3MjkyMDU1NzE0FQIAERgSNzMzMTNENUNFNzBBNjk0NkM0AA==
+                                                                )
+
+                                                            [from] => 917292055714
+                                                            [id] => wamid.HBgMOTE3MjkyMDU1NzE0FQIAEhggN0Y4OUE1MDM4MjJBNjVCRDU5MzkzN0E4MjY1MTk5QzEA
+                                                            [timestamp] => 1746897977
+                                                            [type] => interactive
+                                                            [interactive] => Array
+                                                                (
+                                                                    [type] => button_reply
+                                                                    [button_reply] => Array
+                                                                        (
+                                                                            [id] => browse_products
+                                                                            [title] => Browse Products
+                                                                        )
+
+                                                                )
+
+                                                        )
+
+                                                )
+
+                                        )
+
+                                    [field] => messages
+                                )
+
+                        )
+
+                )
+
+        )
+
+)
+
+2025-05-10 17:26:18 - Message received:
+Array
+(
+    [context] => Array
+        (
+            [from] => 96892009371
+            [id] => wamid.HBgMOTE3MjkyMDU1NzE0FQIAERgSNzMzMTNENUNFNzBBNjk0NkM0AA==
+        )
+
+    [from] => 917292055714
+    [id] => wamid.HBgMOTE3MjkyMDU1NzE0FQIAEhggN0Y4OUE1MDM4MjJBNjVCRDU5MzkzN0E4MjY1MTk5QzEA
+    [timestamp] => 1746897977
+    [type] => interactive
+    [interactive] => Array
+        (
+            [type] => button_reply
+            [button_reply] => Array
+                (
+                    [id] => browse_products
+                    [title] => Browse Products
+                )
+
+        )
+
+)
+
+2025-05-10 17:26:18 - Button pressed: browse_products

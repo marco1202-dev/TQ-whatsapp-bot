@@ -1,0 +1,150 @@
+=== NEW SESSION STARTED ===
+Raw input:
+{"object":"whatsapp_business_account","entry":[{"id":"1051970416783755","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"96892009371","phone_number_id":"640983692435947"},"contacts":[{"profile":{"name":"K"},"wa_id":"917292055714"}],"messages":[{"context":{"from":"96892009371","id":"wamid.HBgMOTE3MjkyMDU1NzE0FQIAERgSMjhGOTNDMkQzNjhFQTY0MjkwAA=="},"from":"917292055714","id":"wamid.HBgMOTE3MjkyMDU1NzE0FQIAEhggQ0Q5RDk4NERCMzc5QTVEMjk2ODlCNjU3QzRFNUY4RjEA","timestamp":"1746899025","type":"interactive","interactive":{"type":"list_reply","list_reply":{"id":"blends","title":"Special Blends","description":"Our signature mixes"}}}]},"field":"messages"}]}]}
+
+Decoded data:
+Array
+(
+    [object] => whatsapp_business_account
+    [entry] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 1051970416783755
+                    [changes] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [value] => Array
+                                        (
+                                            [messaging_product] => whatsapp
+                                            [metadata] => Array
+                                                (
+                                                    [display_phone_number] => 96892009371
+                                                    [phone_number_id] => 640983692435947
+                                                )
+
+                                            [contacts] => Array
+                                                (
+                                                    [0] => Array
+                                                        (
+                                                            [profile] => Array
+                                                                (
+                                                                    [name] => K
+                                                                )
+
+                                                            [wa_id] => 917292055714
+                                                        )
+
+                                                )
+
+                                            [messages] => Array
+                                                (
+                                                    [0] => Array
+                                                        (
+                                                            [context] => Array
+                                                                (
+                                                                    [from] => 96892009371
+                                                                    [id] => wamid.HBgMOTE3MjkyMDU1NzE0FQIAERgSMjhGOTNDMkQzNjhFQTY0MjkwAA==
+                                                                )
+
+                                                            [from] => 917292055714
+                                                            [id] => wamid.HBgMOTE3MjkyMDU1NzE0FQIAEhggQ0Q5RDk4NERCMzc5QTVEMjk2ODlCNjU3QzRFNUY4RjEA
+                                                            [timestamp] => 1746899025
+                                                            [type] => interactive
+                                                            [interactive] => Array
+                                                                (
+                                                                    [type] => list_reply
+                                                                    [list_reply] => Array
+                                                                        (
+                                                                            [id] => blends
+                                                                            [title] => Special Blends
+                                                                            [description] => Our signature mixes
+                                                                        )
+
+                                                                )
+
+                                                        )
+
+                                                )
+
+                                        )
+
+                                    [field] => messages
+                                )
+
+                        )
+
+                )
+
+        )
+
+)
+
+Processing message from 917292055714
+Interactive message detected
+Full interactive structure:
+Array
+(
+    [type] => list_reply
+    [list_reply] => Array
+        (
+            [id] => blends
+            [title] => Special Blends
+            [description] => Our signature mixes
+        )
+
+)
+
+List selection received: blends
+Blends selected
+Preparing to send message:
+{
+    "messaging_product": "whatsapp",
+    "recipient_type": "individual",
+    "to": "917292055714",
+    "type": "interactive",
+    "interactive": {
+        "type": "list",
+        "body": {
+            "text": "Our Blends coffees:"
+        },
+        "action": {
+            "button": "Products",
+            "sections": [
+                {
+                    "title": "Available Products",
+                    "rows": [
+                        {
+                            "id": "morning_blend",
+                            "title": "Morning Blend",
+                            "description": "Balanced and smooth - $15"
+                        },
+                        {
+                            "id": "espresso_blend",
+                            "title": "Espresso Blend",
+                            "description": "Rich and bold - $17"
+                        }
+                    ]
+                },
+                {
+                    "title": "Navigation",
+                    "rows": [
+                        {
+                            "id": "back_to_categories",
+                            "title": "Back to Categories",
+                            "description": "Browse other coffee types"
+                        },
+                        {
+                            "id": "main_menu",
+                            "title": "Main Menu",
+                            "description": "Return to home screen"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
+API Response (200):
+{"messaging_product":"whatsapp","contacts":[{"input":"917292055714","wa_id":"917292055714"}],"messages":[{"id":"wamid.HBgMOTE3MjkyMDU1NzE0FQIAERgSQzdENUY3Q0YyRDNBODdBNDYzAA=="}]}
