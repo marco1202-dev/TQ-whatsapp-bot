@@ -1,8 +1,8 @@
 <?php
 // Database configuration
 define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
+define('DB_USER', 'waassist');
+define('DB_PASS', 'A@Gp1589');
 define('DB_NAME', 'waassist');
 
 // Start session
