@@ -1,6 +1,6 @@
 <?php
-require_once 'wa/app/includes/config.php';
-require_once 'wa/app/includes/functions.php';
+require_once '../app/includes/config.php';
+require_once '../app/includes/functions.php';
 redirectIfNotLoggedIn();
 
 $csrfToken = generateCsrfToken();
@@ -589,6 +589,10 @@ try {
                         deleteBtn.disabled = true;
                     }
                 }
+
+                // After appending handles
+                node.sourceHandle = sourceHandle;
+                node.targetHandle = targetHandle;
             }
 
             // Handle node dragging
@@ -621,7 +625,6 @@ try {
                 e.stopPropagation();
                 const handle = e.target;
                 const node = handle.closest('.node');
-                
                 if (!isConnecting) {
                     // Start new connection
                     isConnecting = true;
@@ -637,13 +640,6 @@ try {
                     // Add mouse move handler
                     document.addEventListener('mousemove', updateTempConnection);
                     document.addEventListener('mouseup', endConnection);
-                } else {
-                    // End connection
-                    if (node.id !== startNode.id) {  // Prevent self-connection
-                        endNode = { id: node.id, element: node, handle: handle };
-                        createConnection(startNode, endNode);
-                    }
-                    cleanupConnection();
                 }
             }
 
@@ -671,17 +667,15 @@ try {
 
             function endConnection(e) {
                 if (!isConnecting) return;
-                
-                // Check if we're over a target handle
                 const targetHandle = document.elementFromPoint(e.clientX, e.clientY);
                 if (targetHandle && targetHandle.classList.contains('handle') && targetHandle.classList.contains('target')) {
                     const node = targetHandle.closest('.node');
-                    if (node && node.id !== startNode.id) {  // Prevent self-connection
+                    if (node && node.id !== startNode.id) {
+                        // Use the actual handle reference
                         endNode = { id: node.id, element: node, handle: targetHandle };
                         createConnection(startNode, endNode);
                     }
                 }
-                
                 cleanupConnection();
             }
 
@@ -698,6 +692,10 @@ try {
             }
 
             function createConnection(start, end) {
+                if (!start || !end || !start.id || !end.id) {
+                    console.error('Invalid connection endpoints', start, end);
+                    return;
+                }
                 // Check if connection already exists
                 const existingConnection = connections.find(conn => 
                     conn.start.id === start.id && conn.end.id === end.id
@@ -758,7 +756,10 @@ try {
 
                 // Remove connections
                 connections = connections.filter(conn => {
-                    if (conn.start.id === nodeId || conn.end.id === nodeId) {
+                    if (
+                        (conn.start && conn.start.id === nodeId) ||
+                        (conn.end && conn.end.id === nodeId)
+                    ) {
                         conn.element.remove();
                         return false;
                     }
@@ -773,6 +774,8 @@ try {
                     log(`Node deleted: ${nodeId}`);
                 }
             }
+
+            window.deleteNode = deleteNode;
 
             // Add node to canvas
             function addNode(type) {
@@ -849,7 +852,7 @@ try {
                 node.innerHTML = `
                     <div class="flex justify-between items-center mb-2">
                         <span class="text-sm font-medium text-gray-700">${type.charAt(0).toUpperCase() + type.slice(1)}</span>
-                        <button onclick="removeNode('${node.id}')" class="text-red-500 hover:text-red-700">
+                        <button onclick="deleteNode('${node.id}')" class="text-red-500 hover:text-red-700">
                             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                             </svg>

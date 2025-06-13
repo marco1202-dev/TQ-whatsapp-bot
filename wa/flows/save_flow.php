@@ -1,6 +1,6 @@
 <?php
-require_once 'wa/app/includes/config.php';
-require_once 'wa/app/includes/functions.php';
+require_once '../app/includes/config.php';
+require_once '../app/includes/functions.php';
 
 // Check if user is logged in
 

@@ -244,10 +244,10 @@
               <a class="nav-link" href="#pricing">Pricing</a>
             </li>
             <li class="nav-item ms-2">
-              <a class="btn btn-login" href="http://localhost/wa/bot/">Login</a>
+              <a class="btn btn-login" href="https://waassist.io/wa/bot/">Login</a>
             </li>
             <li class="nav-item ms-2">
-              <a class="btn btn-join" href="http://localhost/wa/bot/">Join Now</a>
+              <a class="btn btn-join" href="https://waassist.io/wa/bot/">Join Now</a>
             </li>
           </ul>
         </div>

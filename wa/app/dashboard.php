@@ -308,21 +308,11 @@ try {
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5><i class="fas fa-project-diagram me-2"></i>Chat Flows</h5>
-                <button class="btn btn-sm btn-primary" id="refreshFlows">
+                <!-- <button class="btn btn-sm btn-primary" id="refreshFlows">
                     <i class="fas fa-sync"></i>
-                </button>
+                </button> -->
             </div>
-            <!-- <div class="card-body">
-                <div class="mb-3">
-                    <select class="form-select" id="flowBotSelect">
-                        <option value="">All Bots</option>
-                        <?php foreach ($bots as $bot): ?>
-                        <option value="<?= $bot['id'] ?>"><?= htmlspecialchars($bot['business_name']) ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div id="flowsList" class="list-group"></div>
-            </div> -->
+           
         </div>
     <!-- </div> -->
 
@@ -338,7 +328,7 @@ try {
                     <div class="node-item" draggable="true" data-type="http">HTTP Request</div>
                 </div>
                 <div id="flowCanvas" class="flow-canvas" style="position: absolute; left: 250px; top: 0; right: 0; height: 100%; background: #ECE5DD; overflow: auto;"></div> -->
-                <iframe  src="http://localhost/flows.php"  style="width: 100%; height: 100%; border: none;" allowfullscreen> </iframe>
+                <iframe  src="https://waassist.io/wa/flows/flows.php"  style="width: 100%; height: 100%; border: none;" allowfullscreen> </iframe>
             </div>
         </div>
     <!-- </div> -->
