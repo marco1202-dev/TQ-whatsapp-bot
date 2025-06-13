@@ -348,8 +348,8 @@ try {
                     bot_id: botId,
                     nodes: nodeData,
                     connections: connections.map(conn => ({
-                        from: conn.from,
-                        to: conn.to
+                        from: conn.start.id,
+                        to: conn.end.id
                     }))
                 };
 
@@ -431,15 +431,46 @@ try {
                         flowNameInput.value = data.name || '';
                         botSelect.value = data.bot_id || '';
                         
-                        // Load nodes
-                        data.nodes.forEach(node => {
-                            createNode(node.type, node.x, node.y, node.content, node.id);
-                        });
+                        // Clear existing nodes and connections
+                        canvas.innerHTML = '';
+                        nodes = [];
+                        connections = [];
                         
-                        // Load connections
-                        data.connections.forEach(conn => {
-                            createConnection(conn.from, conn.to);
-                        });
+                        // Load nodes first
+                        if (data.nodes && Array.isArray(data.nodes)) {
+                            data.nodes.forEach(node => {
+                                createNode(node.type, node.x, node.y, node.content, node.id);
+                            });
+                        }
+                        
+                        // Then create connections after all nodes are loaded
+                        if (data.connections && Array.isArray(data.connections)) {
+                            data.connections.forEach(conn => {
+                                const startNode = nodes.find(n => n.id === conn.from);
+                                const endNode = nodes.find(n => n.id === conn.to);
+                                
+                                if (startNode && endNode) {
+                                    const start = {
+                                        id: startNode.id,
+                                        element: startNode.element,
+                                        handle: startNode.element.sourceHandle
+                                    };
+                                    
+                                    const end = {
+                                        id: endNode.id,
+                                        element: endNode.element,
+                                        handle: endNode.element.targetHandle
+                                    };
+                                    
+                                    createConnection(start, end);
+                                }
+                            });
+                            // Force update after a short delay to ensure DOM is ready
+                            setTimeout(() => {
+                                updateConnections();
+                                log('Forced updateConnections after loading all nodes and connections.');
+                            }, 100);
+                        }
                     })
                     .catch(error => {
                         console.error('Error loading flow:', error);
@@ -484,7 +515,7 @@ try {
             });
 
             // Create a new node
-            function createNode(type, x, y, content, id) {
+            function createNode(type, x, y, content = {}, id) {
                 const node = document.createElement('div');
                 node.className = 'node';
                 node.style.left = x + 'px';
@@ -501,7 +532,7 @@ try {
                                 <button class="delete-btn" onclick="deleteNode('${node.id}')">Delete</button>
                             </div>
                             <div class="node-content">
-                                <textarea class="w-full p-2 border rounded" placeholder="Enter your message">${content}</textarea>
+                                <textarea class="w-full p-2 border rounded" placeholder="Enter your message">${content.text || ''}</textarea>
                             </div>
                         `;
                         break;
@@ -512,7 +543,7 @@ try {
                                 <button class="delete-btn" onclick="deleteNode('${node.id}')">Delete</button>
                             </div>
                             <div class="node-content">
-                                <input type="file" class="w-full p-2 border rounded">
+                                <input type="file" class="w-full p-2 border rounded" value="${content.file || ''}">
                             </div>
                         `;
                         break;
@@ -524,9 +555,9 @@ try {
                             </div>
                             <div class="node-content">
                                 <div class="space-y-2">
-                                    <input type="text" class="w-full p-2 border rounded" placeholder="Button 1" value="${content.button1}">
-                                    <input type="text" class="w-full p-2 border rounded" placeholder="Button 2" value="${content.button2}">
-                                    <input type="text" class="w-full p-2 border rounded" placeholder="Button 3" value="${content.button3}">
+                                    <input type="text" class="w-full p-2 border rounded" placeholder="Button 1" value="${content.button1 || ''}">
+                                    <input type="text" class="w-full p-2 border rounded" placeholder="Button 2" value="${content.button2 || ''}">
+                                    <input type="text" class="w-full p-2 border rounded" placeholder="Button 3" value="${content.button3 || ''}">
                                 </div>
                             </div>
                         `;
@@ -538,7 +569,7 @@ try {
                                 <button class="delete-btn" onclick="deleteNode('${node.id}')">Delete</button>
                             </div>
                             <div class="node-content">
-                                <input type="number" class="w-full p-2 border rounded" placeholder="Delay in seconds" value="${content.delay}">
+                                <input type="number" class="w-full p-2 border rounded" placeholder="Delay in seconds" value="${content.delay || '1'}">
                             </div>
                         `;
                         break;
@@ -549,12 +580,12 @@ try {
                                 <button class="delete-btn" onclick="deleteNode('${node.id}')">Delete</button>
                             </div>
                             <div class="node-content">
-                                <input type="text" class="w-full p-2 border rounded mb-2" placeholder="URL" value="${content.url}">
+                                <input type="text" class="w-full p-2 border rounded mb-2" placeholder="URL" value="${content.url || ''}">
                                 <select class="w-full p-2 border rounded">
-                                    <option value="GET" ${content.method === 'GET' ? 'selected' : ''}>GET</option>
-                                    <option value="POST" ${content.method === 'POST' ? 'selected' : ''}>POST</option>
-                                    <option value="PUT" ${content.method === 'PUT' ? 'selected' : ''}>PUT</option>
-                                    <option value="DELETE" ${content.method === 'DELETE' ? 'selected' : ''}>DELETE</option>
+                                    <option value="GET" ${(content.method === 'GET') ? 'selected' : ''}>GET</option>
+                                    <option value="POST" ${(content.method === 'POST') ? 'selected' : ''}>POST</option>
+                                    <option value="PUT" ${(content.method === 'PUT') ? 'selected' : ''}>PUT</option>
+                                    <option value="DELETE" ${(content.method === 'DELETE') ? 'selected' : ''}>DELETE</option>
                                 </select>
                             </div>
                         `;
@@ -579,7 +610,14 @@ try {
                 node.addEventListener('mousedown', startDragging);
                 
                 canvas.appendChild(node);
-                nodes.push({id: node.id, element: node, type, x, y, content});
+                nodes.push({
+                    id: node.id,
+                    element: node,
+                    type: type,
+                    x: x,
+                    y: y,
+                    content: content
+                });
                 log(`Node created: ${node.id}`);
 
                 // Disable delete button for first node
@@ -590,9 +628,11 @@ try {
                     }
                 }
 
-                // After appending handles
+                // Store handle references
                 node.sourceHandle = sourceHandle;
                 node.targetHandle = targetHandle;
+                
+                return node;
             }
 
             // Handle node dragging
@@ -700,50 +740,52 @@ try {
                 const existingConnection = connections.find(conn => 
                     conn.start.id === start.id && conn.end.id === end.id
                 );
-                
                 if (existingConnection) {
                     log('Connection already exists');
                     return;
                 }
-                
                 // Create connection element
                 const connection = document.createElement('div');
                 connection.className = 'connection';
                 canvas.appendChild(connection);
-                
+                log(`Appended connection element to canvas: ${start.id} -> ${end.id}`);
                 // Add to connections array
-                connections.push({
+                const conn = {
                     start: start,
                     end: end,
                     element: connection
-                });
-                
+                };
+                connections.push(conn);
                 // Update connection position
-                updateConnections();
+                updateConnectionPosition(conn);
                 log(`Created connection from ${start.id} to ${end.id}`);
             }
 
+            // New function to update a single connection's position
+            function updateConnectionPosition(conn) {
+                const startRect = conn.start.handle.getBoundingClientRect();
+                const endRect = conn.end.handle.getBoundingClientRect();
+                const canvasRect = canvas.getBoundingClientRect();
+                
+                const startX = startRect.right - canvasRect.left;
+                const startY = startRect.top + startRect.height / 2 - canvasRect.top;
+                const endX = endRect.left - canvasRect.left;
+                const endY = endRect.top + endRect.height / 2 - canvasRect.top;
+                
+                // Calculate length and angle
+                const length = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
+                const angle = Math.atan2(endY - startY, endX - startX) * 180 / Math.PI;
+                
+                // Update the connection element
+                conn.element.style.width = length + 'px';
+                conn.element.style.left = startX + 'px';
+                conn.element.style.top = startY + 'px';
+                conn.element.style.transform = `rotate(${angle}deg)`;
+            }
+
+            // Update the updateConnections function to use updateConnectionPosition
             function updateConnections() {
-                connections.forEach(conn => {
-                    const startRect = conn.start.handle.getBoundingClientRect();
-                    const endRect = conn.end.handle.getBoundingClientRect();
-                    const canvasRect = canvas.getBoundingClientRect();
-                    
-                    const startX = startRect.right - canvasRect.left;
-                    const startY = startRect.top + startRect.height / 2 - canvasRect.top;
-                    const endX = endRect.left - canvasRect.left;
-                    const endY = endRect.top + endRect.height / 2 - canvasRect.top;
-                    
-                    // Calculate length and angle
-                    const length = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
-                    const angle = Math.atan2(endY - startY, endX - startX) * 180 / Math.PI;
-                    
-                    // Update the connection element
-                    conn.element.style.width = length + 'px';
-                    conn.element.style.left = startX + 'px';
-                    conn.element.style.top = startY + 'px';
-                    conn.element.style.transform = `rotate(${angle}deg)`;
-                });
+                connections.forEach(updateConnectionPosition);
             }
 
             // Add delete node function
