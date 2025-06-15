@@ -93,15 +93,53 @@ function processIncomingMessage($botId, $message, $messageContent) {
         ]);
         
         // Process flow
-        $currentFlow = getCurrentFlow($botId, $message['from']);
-        error_log("Current flow for {$message['from']}: " . $currentFlow);
+        // $currentFlow = getCurrentFlow($botId, $message['from']);
+        // error_log("Current flow for {$message['from']}: " . $currentFlow);
         
-        $nextStep = determineNextFlowStep($botId, $currentFlow, $messageContent);
-        error_log("Next step determined: " . ($nextStep ?? 'null'));
+        // $nextStep = determineNextFlowStep($botId, $currentFlow, $messageContent);
+        // error_log("Next step determined: " . ($nextStep ?? 'null'));
         
-        if ($nextStep) {
-            sendFlowMessage($botId, $message['from'], $nextStep);
+        // if ($nextStep) {
+        //     sendFlowMessage($botId, $message['from'], $nextStep);
+        // }
+
+        $stmt = $pdo->prepare("SELECT fb_access_token, fb_phone_number_id FROM bots WHERE id = ?");
+        $stmt->execute([$botId]);
+        $bot = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $url = "https://graph.facebook.com/v22.0/{$bot['fb_phone_number_id']}/messages";
+        $headers = [
+            "Authorization: Bearer {$bot['fb_access_token']}",
+            "Content-Type: application/json"
+        ];
+
+        $data = [
+            "messaging_product" => "whatsapp",
+            "to" => $to,
+            "type" => "text",
+            "text" => ["body" => "Hi, How can I help you?"]
+        ];
+
+        $ch = curl_init();
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $url,
+            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => json_encode($data),
+            CURLOPT_RETURNTRANSFER => true,
+        ]);
+        
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        
+        if ($httpCode !== 200) {
+            error_log("Failed to send message. HTTP Code: " . $httpCode . ", Response: " . $response);
+            curl_close($ch);
+            return false;
         }
+        
+        curl_close($ch);
+
     } catch (Exception $e) {
         error_log("Error processing message: " . $e->getMessage());
     }
