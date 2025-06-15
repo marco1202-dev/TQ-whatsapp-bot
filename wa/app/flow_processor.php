@@ -95,7 +95,7 @@ function sendFlowMessage($botId, $to, $flowName) {
         $messageContent = $currentStep['message'] ?? 'Please select an option';
         
         // Prepare API request
-        $url = "https://graph.facebook.com/v17.0/{$bot['fb_phone_number_id']}/messages";
+        $url = "https://graph.facebook.com/v22.0/{$bot['fb_phone_number_id']}/messages";
         $headers = [
             "Authorization: Bearer {$bot['fb_access_token']}",
             "Content-Type: application/json"
