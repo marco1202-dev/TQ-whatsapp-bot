@@ -43,9 +43,10 @@ if ($data['object'] === 'whatsapp_business_account') {
                     $messageContent = $message['text']['body'];
                     break;
                 case 'interactive':
-                    $messageContent = $message['interactive']['button_reply']['title'] ?? 
-                                    $message['interactive']['list_reply']['title'] ?? 
+                    $messageContent = $message['interactive']['button_reply']['id'] ?? 
+                                    $message['interactive']['list_reply']['id'] ?? 
                                     '[interactive]';
+                    error_log("Interactive message received with ID: " . $messageContent);
                     break;
                 default:
                     $messageContent = '[' . $messageType . ']';

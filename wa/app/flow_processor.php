@@ -39,13 +39,10 @@ function determineNextFlowStep($botId, $currentFlow, $messageContent) {
         $messageContent = strtolower(trim($messageContent));
         error_log("Processing message: '" . $messageContent . "' in flow: " . $currentFlow);
         
-        // Check for exact matches in choices
+        // For interactive messages, the messageContent is the button ID
         if (isset($currentStep['choices'])) {
             foreach ($currentStep['choices'] as $choice) {
-                $choiceMatch = strtolower(trim($choice['match']));
-                error_log("Checking choice match: '" . $choiceMatch . "' against message: '" . $messageContent . "'");
-                
-                if ($choiceMatch === $messageContent) {
+                if ($choice['goto'] === $messageContent) {
                     error_log("Found matching choice, going to: " . $choice['goto']);
                     return $choice['goto'];
                 }
@@ -163,13 +160,12 @@ function sendFlowMessage($botId, $to, $flowName) {
         
         curl_close($ch);
         
-        // Update user session with the NEXT flow state
-        $nextFlow = $currentStep['default_goto'] ?? $flowName;
+        // Update user session with the CURRENT flow state
         $stmt = $pdo->prepare("INSERT INTO user_sessions 
             (bot_id, phone_number, current_flow, last_interaction)
             VALUES (?, ?, ?, NOW())
             ON DUPLICATE KEY UPDATE current_flow = ?, last_interaction = NOW()");
-        $stmt->execute([$botId, $to, $nextFlow, $nextFlow]);
+        $stmt->execute([$botId, $to, $flowName, $flowName]);
         
         // Save outgoing message
         $responseData = json_decode($response, true);
