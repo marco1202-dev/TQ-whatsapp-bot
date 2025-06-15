@@ -78,44 +78,77 @@ function processIncomingMessage($botId, $message, $messageContent) {
     global $pdo;
     
     try {
-        // Save message to database
-        $stmt = $pdo->prepare("INSERT INTO messages 
-            (bot_id, message_id, from_number, content, type, timestamp)
-            VALUES (?, ?, ?, ?, ?, ?)");
+        // // Save message to database
+        // $stmt = $pdo->prepare("INSERT INTO messages 
+        //     (bot_id, message_id, from_number, content, type, timestamp)
+        //     VALUES (?, ?, ?, ?, ?, ?)");
         
-        $stmt->execute([
-            $botId,
-            $message['id'],
-            $message['from'],
-            $messageContent,
-            $message['type'],
-            date('Y-m-d H:i:s', $message['timestamp'])
-        ]);
+        // $stmt->execute([
+        //     $botId,
+        //     $message['id'],
+        //     $message['from'],
+        //     $messageContent,
+        //     $message['type'],
+        //     date('Y-m-d H:i:s', $message['timestamp'])
+        // ]);
         
-        // Process flow
-        // $currentFlow = getCurrentFlow($botId, $message['from']);
-        // error_log("Current flow for {$message['from']}: " . $currentFlow);
+        // // Process flow
+        // // $currentFlow = getCurrentFlow($botId, $message['from']);
+        // // error_log("Current flow for {$message['from']}: " . $currentFlow);
         
-        // $nextStep = determineNextFlowStep($botId, $currentFlow, $messageContent);
-        // error_log("Next step determined: " . ($nextStep ?? 'null'));
+        // // $nextStep = determineNextFlowStep($botId, $currentFlow, $messageContent);
+        // // error_log("Next step determined: " . ($nextStep ?? 'null'));
         
-        // if ($nextStep) {
-        //     sendFlowMessage($botId, $message['from'], $nextStep);
+        // // if ($nextStep) {
+        // //     sendFlowMessage($botId, $message['from'], $nextStep);
+        // // }
+
+        // $stmt = $pdo->prepare("SELECT fb_access_token, fb_phone_number_id FROM bots WHERE id = ?");
+        // $stmt->execute([$botId]);
+        // $bot = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // $url = "https://graph.facebook.com/v22.0/{$bot['fb_phone_number_id']}/messages";
+        // $headers = [
+        //     "Authorization: Bearer {$bot['fb_access_token']}",
+        //     "Content-Type: application/json"
+        // ];
+
+        // $data = [
+        //     "messaging_product" => "whatsapp",
+        //     "to" => $to,
+        //     "type" => "text",
+        //     "text" => ["body" => "Hi, How can I help you?"]
+        // ];
+
+        // $ch = curl_init();
+        // curl_setopt_array($ch, [
+        //     CURLOPT_URL => $url,
+        //     CURLOPT_HTTPHEADER => $headers,
+        //     CURLOPT_POST => true,
+        //     CURLOPT_POSTFIELDS => json_encode($data),
+        //     CURLOPT_RETURNTRANSFER => true,
+        // ]);
+        
+        // $response = curl_exec($ch);
+        // $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        
+        // if ($httpCode !== 200) {
+        //     error_log("Failed to send message. HTTP Code: " . $httpCode . ", Response: " . $response);
+        //     curl_close($ch);
+        //     return false;
         // }
+        
+        // curl_close($ch);
 
-        $stmt = $pdo->prepare("SELECT fb_access_token, fb_phone_number_id FROM bots WHERE id = ?");
-        $stmt->execute([$botId]);
-        $bot = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        $url = "https://graph.facebook.com/v22.0/{$bot['fb_phone_number_id']}/messages";
+        $url = "https://graph.facebook.com/v22.0/640983692435947/messages";
         $headers = [
-            "Authorization: Bearer {$bot['fb_access_token']}",
+            "Authorization: Bearer EAAPREqtct0kBO4oRGjkZBix0BJIEFrBSjr0dEAOjujsybfUIxOo7GgcFiZBZChnOSm1blpFbZAdNIi1Q0RzaGvLpjjSowXrvZA21hgJzQazWrZAt3W6K5ML3iLqnqtAlDZBx6w0s8Br3Qy0DKgnkWO4g7SPWXcI73PWAg350NzXUb5J0OiPNhWaiSVmO5S8jFuHGGxZB36RZANB7PBzRaZBi6ics3YeI1WxEVfNiZA7PkOhz8hYevsZD",
             "Content-Type: application/json"
         ];
 
         $data = [
             "messaging_product" => "whatsapp",
-            "to" => $to,
+            "to" => "529991987791",  // fixed here
             "type" => "text",
             "text" => ["body" => "Hi, How can I help you?"]
         ];
@@ -128,16 +161,16 @@ function processIncomingMessage($botId, $message, $messageContent) {
             CURLOPT_POSTFIELDS => json_encode($data),
             CURLOPT_RETURNTRANSFER => true,
         ]);
-        
+
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        
+
         if ($httpCode !== 200) {
             error_log("Failed to send message. HTTP Code: " . $httpCode . ", Response: " . $response);
             curl_close($ch);
             return false;
         }
-        
+
         curl_close($ch);
 
     } catch (Exception $e) {
