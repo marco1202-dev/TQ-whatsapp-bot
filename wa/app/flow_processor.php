@@ -39,10 +39,13 @@ function determineNextFlowStep($botId, $currentFlow, $messageContent) {
         $messageContent = strtolower(trim($messageContent));
         error_log("Processing message: '" . $messageContent . "' in flow: " . $currentFlow);
         
-        // For interactive messages, the messageContent is the button ID
+        // For interactive messages, the messageContent is the button ID (match value)
         if (isset($currentStep['choices'])) {
             foreach ($currentStep['choices'] as $choice) {
-                if ($choice['goto'] === $messageContent) {
+                $choiceMatch = strtolower(trim($choice['match']));
+                error_log("Checking choice match: '" . $choiceMatch . "' against message: '" . $messageContent . "'");
+                
+                if ($choiceMatch === $messageContent) {
                     error_log("Found matching choice, going to: " . $choice['goto']);
                     return $choice['goto'];
                 }
@@ -121,7 +124,7 @@ function sendFlowMessage($botId, $to, $flowName) {
                 $buttons[] = [
                     'type' => 'reply',
                     'reply' => [
-                        'id' => $choice['goto'],
+                        'id' => $choice['match'],
                         'title' => $choice['display']
                     ]
                 ];
