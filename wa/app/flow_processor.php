@@ -37,18 +37,25 @@ function determineNextFlowStep($botId, $currentFlow, $messageContent) {
         }
         
         $messageContent = strtolower(trim($messageContent));
+        error_log("Processing message: '" . $messageContent . "' in flow: " . $currentFlow);
         
         // Check for exact matches in choices
         if (isset($currentStep['choices'])) {
             foreach ($currentStep['choices'] as $choice) {
-                if (strtolower(trim($choice['match'])) === $messageContent) {
+                $choiceMatch = strtolower(trim($choice['match']));
+                error_log("Checking choice match: '" . $choiceMatch . "' against message: '" . $messageContent . "'");
+                
+                if ($choiceMatch === $messageContent) {
+                    error_log("Found matching choice, going to: " . $choice['goto']);
                     return $choice['goto'];
                 }
             }
         }
         
-        // Return default goto or current flow if no match
-        return $currentStep['default_goto'] ?? $currentFlow;
+        // If no match found, return default_goto or current flow
+        $nextFlow = $currentStep['default_goto'] ?? $currentFlow;
+        error_log("No match found, using default_goto: " . $nextFlow);
+        return $nextFlow;
         
     } catch (Exception $e) {
         error_log("Error in determineNextFlowStep: " . $e->getMessage());
@@ -93,6 +100,7 @@ function sendFlowMessage($botId, $to, $flowName) {
         }
         
         $messageContent = $currentStep['message'] ?? 'Please select an option';
+        error_log("Sending message for flow: " . $flowName . " with content: " . $messageContent);
         
         // Prepare API request
         $url = "https://graph.facebook.com/v22.0/{$bot['fb_phone_number_id']}/messages";
@@ -155,12 +163,13 @@ function sendFlowMessage($botId, $to, $flowName) {
         
         curl_close($ch);
         
-        // Update user session
+        // Update user session with the NEXT flow state
+        $nextFlow = $currentStep['default_goto'] ?? $flowName;
         $stmt = $pdo->prepare("INSERT INTO user_sessions 
             (bot_id, phone_number, current_flow, last_interaction)
             VALUES (?, ?, ?, NOW())
             ON DUPLICATE KEY UPDATE current_flow = ?, last_interaction = NOW()");
-        $stmt->execute([$botId, $to, $flowName, $flowName]);
+        $stmt->execute([$botId, $to, $nextFlow, $nextFlow]);
         
         // Save outgoing message
         $responseData = json_decode($response, true);
