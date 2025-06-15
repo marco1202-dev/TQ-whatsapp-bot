@@ -231,6 +231,36 @@ try {
                         </div>
                     </div>
                 </div>
+                <div class="node-item" draggable="true" data-type="interactive-list">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/>
+                            </svg>
+                            <span class="text-sm font-medium">Interactive List</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-item" draggable="true" data-type="conversation-flow">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/>
+                            </svg>
+                            <span class="text-sm font-medium">Conversation Flow</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-item" draggable="true" data-type="form">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/>
+                            </svg>
+                            <span class="text-sm font-medium">Form</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <h2 class="section-title mt-8">Actions</h2>
@@ -245,6 +275,16 @@ try {
                         </div>
                     </div>
                 </div>
+                <div class="node-item" draggable="true" data-type="opt-out">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span class="text-sm font-medium">Opt-out</span>
+                        </div>
+                    </div>
+                </div>
                 <div class="node-item" draggable="true" data-type="http">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
@@ -252,6 +292,26 @@ try {
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                             </svg>
                             <span class="text-sm font-medium">HTTP Request</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-item" draggable="true" data-type="request-make">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                            </svg>
+                            <span class="text-sm font-medium">Request Make</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-item" draggable="true" data-type="request-zapier">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                            </svg>
+                            <span class="text-sm font-medium">Request Zapier</span>
                         </div>
                     </div>
                 </div>
@@ -281,6 +341,7 @@ try {
             let isConnecting = false;
             let tempConnection = null;
             let currentFlowId = null;
+            let isSaving = false; // Add flag to prevent duplicate saves
 
             // Function to get node content
             function getNodeContent(node) {
@@ -317,6 +378,8 @@ try {
 
             // Modify save function to include flow name and bot ID
             function saveFlow() {
+                if (isSaving) return; // Prevent duplicate saves
+                
                 const flowName = flowNameInput.value.trim();
                 const botId = botSelect.value;
 
@@ -329,6 +392,8 @@ try {
                     Swal.fire('Error', 'Please select a bot', 'error');
                     return;
                 }
+
+                isSaving = true; // Set saving flag
 
                 // Collect node data with content
                 const nodeData = nodes.map(node => {
@@ -378,6 +443,9 @@ try {
                 .catch(error => {
                     console.error('Error:', error);
                     Swal.fire('Error', error.message, 'error');
+                })
+                .finally(() => {
+                    isSaving = false; // Reset saving flag
                 });
             }
 
@@ -438,14 +506,14 @@ try {
                         
                         // Load nodes first
                         if (data.nodes && Array.isArray(data.nodes)) {
-                            data.nodes.forEach(node => {
-                                createNode(node.type, node.x, node.y, node.content, node.id);
-                            });
+                        data.nodes.forEach(node => {
+                            createNode(node.type, node.x, node.y, node.content, node.id);
+                        });
                         }
                         
                         // Then create connections after all nodes are loaded
                         if (data.connections && Array.isArray(data.connections)) {
-                            data.connections.forEach(conn => {
+                        data.connections.forEach(conn => {
                                 const startNode = nodes.find(n => n.id === conn.from);
                                 const endNode = nodes.find(n => n.id === conn.to);
                                 
@@ -587,6 +655,124 @@ try {
                                     <option value="PUT" ${(content.method === 'PUT') ? 'selected' : ''}>PUT</option>
                                     <option value="DELETE" ${(content.method === 'DELETE') ? 'selected' : ''}>DELETE</option>
                                 </select>
+                            </div>
+                        `;
+                        break;
+                    case 'interactive-list':
+                        nodeContent = `
+                            <div class="node-header">
+                                <span class="font-medium">Interactive List</span>
+                                <button class="delete-btn" onclick="deleteNode('${node.id}')">Delete</button>
+                            </div>
+                            <div class="node-content">
+                                <div class="space-y-2">
+                                    <input type="text" class="w-full p-2 border rounded" placeholder="List Title">
+                                    <input type="text" class="w-full p-2 border rounded" placeholder="List Description">
+                                    <div class="space-y-2">
+                                        <input type="text" class="w-full p-2 border rounded" placeholder="List Item 1">
+                                        <input type="text" class="w-full p-2 border rounded" placeholder="List Item 2">
+                                        <input type="text" class="w-full p-2 border rounded" placeholder="List Item 3">
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'conversation-flow':
+                        nodeContent = `
+                            <div class="node-header">
+                                <span class="font-medium">Conversation Flow</span>
+                                <button class="delete-btn" onclick="deleteNode('${node.id}')">Delete</button>
+                            </div>
+                            <div class="node-content">
+                                <div class="space-y-2">
+                                    <input type="text" class="w-full p-2 border rounded" placeholder="Flow Name">
+                                    <textarea class="w-full p-2 border rounded" placeholder="Flow Description" rows="3"></textarea>
+                                    <select class="w-full p-2 border rounded">
+                                        <option value="">Select Flow Type</option>
+                                        <option value="linear">Linear Flow</option>
+                                        <option value="branching">Branching Flow</option>
+                                        <option value="conditional">Conditional Flow</option>
+                                    </select>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'form':
+                        nodeContent = `
+                            <div class="node-header">
+                                <span class="font-medium">Form</span>
+                                <button class="delete-btn" onclick="deleteNode('${node.id}')">Delete</button>
+                            </div>
+                            <div class="node-content">
+                                <div class="space-y-2">
+                                    <input type="text" class="w-full p-2 border rounded" placeholder="Form Title">
+                                    <div class="space-y-2">
+                                        <div class="flex items-center gap-2">
+                                            <input type="text" class="flex-1 p-2 border rounded" placeholder="Field Label">
+                                            <select class="p-2 border rounded">
+                                                <option value="text">Text</option>
+                                                <option value="number">Number</option>
+                                                <option value="email">Email</option>
+                                                <option value="date">Date</option>
+                                            </select>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <input type="text" class="flex-1 p-2 border rounded" placeholder="Field Label">
+                                            <select class="p-2 border rounded">
+                                                <option value="text">Text</option>
+                                                <option value="number">Number</option>
+                                                <option value="email">Email</option>
+                                                <option value="date">Date</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'opt-out':
+                        nodeContent = `
+                            <div class="node-header">
+                                <span class="font-medium">Opt-out</span>
+                                <button class="delete-btn" onclick="deleteNode('${node.id}')">Delete</button>
+                            </div>
+                            <div class="node-content">
+                                <div class="space-y-2">
+                                    <input type="text" class="w-full p-2 border rounded" placeholder="Opt-out Message">
+                                    <select class="w-full p-2 border rounded">
+                                        <option value="permanent">Permanent Opt-out</option>
+                                        <option value="temporary">Temporary Opt-out</option>
+                                    </select>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'request-make':
+                        nodeContent = `
+                            <div class="node-header">
+                                <span class="font-medium">Request Make</span>
+                                <button class="delete-btn" onclick="deleteNode('${node.id}')">Delete</button>
+                            </div>
+                            <div class="node-content">
+                                <div class="space-y-2">
+                                    <input type="text" class="w-full p-2 border rounded" placeholder="Make Scenario Name">
+                                    <input type="text" class="w-full p-2 border rounded" placeholder="API Key">
+                                    <textarea class="w-full p-2 border rounded" placeholder="Request Parameters" rows="3"></textarea>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'request-zapier':
+                        nodeContent = `
+                            <div class="node-header">
+                                <span class="font-medium">Request Zapier</span>
+                                <button class="delete-btn" onclick="deleteNode('${node.id}')">Delete</button>
+                            </div>
+                            <div class="node-content">
+                                <div class="space-y-2">
+                                    <input type="text" class="w-full p-2 border rounded" placeholder="Zapier Webhook URL">
+                                    <textarea class="w-full p-2 border rounded" placeholder="Request Payload" rows="3"></textarea>
+                                </div>
                             </div>
                         `;
                         break;
@@ -763,24 +949,24 @@ try {
 
             // New function to update a single connection's position
             function updateConnectionPosition(conn) {
-                const startRect = conn.start.handle.getBoundingClientRect();
-                const endRect = conn.end.handle.getBoundingClientRect();
-                const canvasRect = canvas.getBoundingClientRect();
-                
-                const startX = startRect.right - canvasRect.left;
-                const startY = startRect.top + startRect.height / 2 - canvasRect.top;
-                const endX = endRect.left - canvasRect.left;
-                const endY = endRect.top + endRect.height / 2 - canvasRect.top;
-                
-                // Calculate length and angle
-                const length = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
-                const angle = Math.atan2(endY - startY, endX - startX) * 180 / Math.PI;
-                
-                // Update the connection element
-                conn.element.style.width = length + 'px';
-                conn.element.style.left = startX + 'px';
-                conn.element.style.top = startY + 'px';
-                conn.element.style.transform = `rotate(${angle}deg)`;
+                    const startRect = conn.start.handle.getBoundingClientRect();
+                    const endRect = conn.end.handle.getBoundingClientRect();
+                    const canvasRect = canvas.getBoundingClientRect();
+                    
+                    const startX = startRect.right - canvasRect.left;
+                    const startY = startRect.top + startRect.height / 2 - canvasRect.top;
+                    const endX = endRect.left - canvasRect.left;
+                    const endY = endRect.top + endRect.height / 2 - canvasRect.top;
+                    
+                    // Calculate length and angle
+                    const length = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
+                    const angle = Math.atan2(endY - startY, endX - startX) * 180 / Math.PI;
+                    
+                    // Update the connection element
+                    conn.element.style.width = length + 'px';
+                    conn.element.style.left = startX + 'px';
+                    conn.element.style.top = startY + 'px';
+                    conn.element.style.transform = `rotate(${angle}deg)`;
             }
 
             // Update the updateConnections function to use updateConnectionPosition
@@ -885,6 +1071,131 @@ try {
                                         <option value="GET">GET</option>
                                         <option value="POST">POST</option>
                                     </select>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'interactive-list':
+                        content = `
+                            <div class="space-y-2">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">List Title</label>
+                                    <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">List Description</label>
+                                    <textarea class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" rows="3"></textarea>
+                                </div>
+                                <div class="space-y-2">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">List Item 1</label>
+                                        <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">List Item 2</label>
+                                        <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">List Item 3</label>
+                                        <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'conversation-flow':
+                        content = `
+                            <div class="space-y-2">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Flow Name</label>
+                                    <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Flow Description</label>
+                                    <textarea class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" rows="3"></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Flow Type</label>
+                                    <select class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                        <option value="">Select Flow Type</option>
+                                        <option value="linear">Linear Flow</option>
+                                        <option value="branching">Branching Flow</option>
+                                        <option value="conditional">Conditional Flow</option>
+                                    </select>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'form':
+                        content = `
+                            <div class="space-y-2">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Form Title</label>
+                                    <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="flex items-center gap-2">
+                                        <label class="block text-sm font-medium text-gray-700">Field Label</label>
+                                        <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <label class="block text-sm font-medium text-gray-700">Field Type</label>
+                                        <select class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                            <option value="text">Text</option>
+                                            <option value="number">Number</option>
+                                            <option value="email">Email</option>
+                                            <option value="date">Date</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'opt-out':
+                        content = `
+                            <div class="space-y-2">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Opt-out Message</label>
+                                    <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Opt-out Type</label>
+                                    <select class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                        <option value="permanent">Permanent Opt-out</option>
+                                        <option value="temporary">Temporary Opt-out</option>
+                                    </select>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'request-make':
+                        content = `
+                            <div class="space-y-2">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Make Scenario Name</label>
+                                    <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">API Key</label>
+                                    <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Request Parameters</label>
+                                    <textarea class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" rows="3"></textarea>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'request-zapier':
+                        content = `
+                            <div class="space-y-2">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Zapier Webhook URL</label>
+                                    <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Request Payload</label>
+                                    <textarea class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" rows="3"></textarea>
                                 </div>
                             </div>
                         `;

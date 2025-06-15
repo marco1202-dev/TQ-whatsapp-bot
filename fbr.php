@@ -1,6 +1,7 @@
 <?php
 require_once 'wa/app/includes/config.php';
 require_once 'wa/app/includes/functions.php';
+include 'wa/app/flow_processor.php';
 
 $payload = file_get_contents('php://input');
 $data = json_decode($payload, true);
