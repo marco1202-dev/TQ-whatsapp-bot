@@ -100,11 +100,18 @@ function processIncomingMessage($botId, $message, $messageContent) {
         $nextStep = determineNextFlowStep($botId, $currentFlow, $messageContent);
         
         error_log("=========================== Next step ======================");
-        error_log($botId, $nextStep ?? 'null', $message['from']);
+        error_log("Bot ID: " . $botId . ", Next Step: " . ($nextStep ?? 'null') . ", From: " . $message['from']);
 
         if ($nextStep) {
             sendFlowMessage($botId, $message['from'], $nextStep);
         }
+    } catch (PDOException $e) {
+        // Handle duplicate message gracefully
+        if ($e->getCode() == 23000 && strpos($e->getMessage(), 'Duplicate entry') !== false) {
+            error_log("Duplicate message received, skipping processing");
+            return;
+        }
+        error_log("Database error processing message: " . $e->getMessage());
     } catch (Exception $e) {
         error_log("Error processing message: " . $e->getMessage());
     }
