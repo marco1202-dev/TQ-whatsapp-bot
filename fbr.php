@@ -24,12 +24,33 @@ if ($data['object'] === 'whatsapp_business_account') {
         $bot = getBotByPhoneNumberId($phoneNumberId);
         
         if (!$bot) {
+            error_log("Bot not found for phone_number_id: " . $phoneNumberId);
             continue;
         }
 
         $message = $entry['changes'][0]['value']['messages'][0] ?? null;
         if ($message) {
-            processIncomingMessage($bot['id'], $message);
+            // Log incoming message for debugging
+            error_log("Incoming message: " . json_encode($message));
+            
+            // Extract message content based on type
+            $messageContent = '';
+            $messageType = $message['type'];
+            
+            switch ($messageType) {
+                case 'text':
+                    $messageContent = $message['text']['body'];
+                    break;
+                case 'interactive':
+                    $messageContent = $message['interactive']['button_reply']['title'] ?? 
+                                    $message['interactive']['list_reply']['title'] ?? 
+                                    '[interactive]';
+                    break;
+                default:
+                    $messageContent = '[' . $messageType . ']';
+            }
+            
+            processIncomingMessage($bot['id'], $message, $messageContent);
         }
     }
     http_response_code(200);
@@ -53,29 +74,36 @@ function getBotByPhoneNumberId($phoneNumberId) {
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
-function processIncomingMessage($botId, $message) {
+function processIncomingMessage($botId, $message, $messageContent) {
     global $pdo;
     
-    // Save message to database
-    $stmt = $pdo->prepare("INSERT INTO messages 
-        (bot_id, message_id, from_number, content, type, timestamp)
-        VALUES (?, ?, ?, ?, ?, ?)");
-    
-    $stmt->execute([
-        $botId,
-        $message['id'],
-        $message['from'],
-        $message['text']['body'] ?? '[media]',
-        $message['type'],
-        date('Y-m-d H:i:s', $message['timestamp'])
-    ]);
-    
-    // Process flow
-    $currentFlow = getCurrentFlow($botId, $message['from']);
-    $nextStep = determineNextFlowStep($botId, $currentFlow, $message);
-    
-    if ($nextStep) {
-        sendFlowMessage($botId, $message['from'], $nextStep);
+    try {
+        // Save message to database
+        $stmt = $pdo->prepare("INSERT INTO messages 
+            (bot_id, message_id, from_number, content, type, timestamp)
+            VALUES (?, ?, ?, ?, ?, ?)");
+        
+        $stmt->execute([
+            $botId,
+            $message['id'],
+            $message['from'],
+            $messageContent,
+            $message['type'],
+            date('Y-m-d H:i:s', $message['timestamp'])
+        ]);
+        
+        // Process flow
+        $currentFlow = getCurrentFlow($botId, $message['from']);
+        error_log("Current flow for {$message['from']}: " . $currentFlow);
+        
+        $nextStep = determineNextFlowStep($botId, $currentFlow, $messageContent);
+        error_log("Next step determined: " . ($nextStep ?? 'null'));
+        
+        if ($nextStep) {
+            sendFlowMessage($botId, $message['from'], $nextStep);
+        }
+    } catch (Exception $e) {
+        error_log("Error processing message: " . $e->getMessage());
     }
 }
 
